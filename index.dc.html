@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>NESU — National Engineering Society of Uzbekistan</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+    @keyframes nesuMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes nesuRollUp { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+    @keyframes nesuRollDown { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
+  <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ false }}">
+    <dc-import name="Intro" on-done="{{ introDone }}" hint-size="100%,0px"></dc-import>
+  </sc-if>
+  <dc-import name="Header" active="home" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="Home" style="flex: 1">
+
+    <section style="background: #0E2344; background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px); background-size: 48px 48px">
+      <div style="max-width: 1280px; margin: 0 auto; padding: clamp(72px, 10vw, 120px) 32px clamp(80px, 11vw, 128px); display: flex; align-items: stretch; gap: 48px">
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 24px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ annotation }}</span>
+          <h1 style="margin: 0; font-size: clamp(34px, 6.5vw, 58px); font-weight: 700; line-height: 1.08; letter-spacing: -0.015em; color: #FFFFFF; max-width: 780px; text-wrap: pretty">{{ heroTitle }}</h1>
+          <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #B9C4D4; max-width: 620px; text-wrap: pretty">{{ heroIntro }}</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px">
+            <a href="contact.dc.html" style="background: #0057B8; color: #FFFFFF; text-decoration: none; font-size: 15px; font-weight: 600; padding: 14px 26px; border-radius: 3px" style-hover="background: #00A3A3; color: #FFFFFF">{{ ctaPrimary }}</a>
+            <a href="events.dc.html" style="background: transparent; color: #FFFFFF; text-decoration: none; font-size: 15px; font-weight: 600; padding: 14px 26px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.35)" style-hover="border-color: #FFFFFF; color: #FFFFFF">{{ ctaSecondary }}</a>
+          </div>
+        </div>
+        <sc-if value="{{ showStrips }}" hint-placeholder-val="{{ false }}">
+          <div style="flex: none; display: flex; gap: 25px; height: 460px; align-self: center; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)">
+            <div style="display: flex; flex-direction: column; gap: 16px; animation: nesuRollUp 30s linear infinite">
+              <sc-for list="{{ stripA }}" as="tile" hint-placeholder-count="6">
+                <a href="{{ tile.href }}" style="width: 138px; height: 96px; flex: none; border-radius: 3px; overflow: hidden; border: 1px solid rgba(255,255,255,0.14); text-decoration: none; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; background-color: #10264C; background-image: {{ tile.bg }}; background-size: cover; background-position: center">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: #B9C4D4; text-shadow: 0 1px 3px rgba(4,9,17,0.9); line-height: 1.35">{{ tile.label }}</span>
+                </a>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 16px; animation: nesuRollDown 34s linear infinite">
+              <sc-for list="{{ stripB }}" as="tile" hint-placeholder-count="6">
+                <a href="{{ tile.href }}" style="width: 138px; height: 96px; flex: none; border-radius: 3px; overflow: hidden; border: 1px solid rgba(255,255,255,0.14); text-decoration: none; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; background-color: #0F2140; background-image: {{ tile.bg }}; background-size: cover; background-position: center">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: #B9C4D4; text-shadow: 0 1px 3px rgba(4,9,17,0.9); line-height: 1.35">{{ tile.label }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </section>
+
+    <section data-screen-label="Partners strip" style="border-bottom: 1px solid var(--border); background: var(--bg-subtle); overflow: hidden; padding: 24px 0">
+      <div style="display: flex; width: max-content; gap: 64px; align-items: center; animation: nesuMarquee 32s linear infinite">
+        <sc-for list="{{ partnerLoop }}" as="p" hint-placeholder-count="8">
+          <a href="about.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; flex: none">
+            <sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ false }}">
+              <div role="img" aria-label="{{ p.name }}" style="height: 30px; width: 110px; flex: none; background-image: {{ p.imgBg }}; background-size: contain; background-repeat: no-repeat; background-position: left center"></div>
+            </sc-if>
+            <sc-if value="{{ p.noImg }}" hint-placeholder-val="{{ true }}">
+              <span style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: var(--text); color: var(--bg); font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; border-radius: 2px; flex: none">{{ p.mark }}</span>
+            </sc-if>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); white-space: nowrap">{{ p.name }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-screen-label="About preview" style="max-width: 1280px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; justify-content: center">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 24px"><div style="display: flex; flex-direction: column"><span data-reveal style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kAbout }}</span><h2 data-reveal style="margin: 10px 0 0; font-size: clamp(34px, 5vw, 56px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.05; color: var(--text)">{{ hAbout }}</h2></div><span data-reveal aria-hidden="true" style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(56px, 9vw, 128px); line-height: 0.85; font-weight: 600; color: transparent; -webkit-text-stroke: 1.5px var(--border-2)">01</span></div>
+      <p style="margin: 20px 0 0; font-size: clamp(22px, 3vw, 30px); font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; color: var(--text); max-width: 760px; text-wrap: pretty">{{ aboutMission }}</p>
+      <p style="margin: 16px 0 0; font-size: 16px; line-height: 1.65; color: var(--text-2); max-width: 680px; text-wrap: pretty">{{ aboutBody }}</p>
+      <a href="about.dc.html" style="display: inline-block; margin-top: 18px; font-size: 14.5px; font-weight: 600; color: var(--blue); text-decoration: none">{{ learnMore }} →</a>
+    </section>
+
+    <section data-screen-label="Events preview" style="max-width: 1280px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; justify-content: center">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 24px">
+        <div style="display: flex; flex-direction: column"><span data-reveal style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kEvents }}</span><h2 data-reveal style="margin: 10px 0 0; font-size: clamp(34px, 5vw, 56px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.05; color: var(--text)">{{ hEvents }}</h2></div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px"><span data-reveal aria-hidden="true" style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(56px, 9vw, 128px); line-height: 0.85; font-weight: 600; color: transparent; -webkit-text-stroke: 1.5px var(--border-2)">02</span><a href="events.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--blue); text-decoration: none">{{ viewAll }} →</a></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 20px; margin-top: clamp(28px, 5vh, 52px)" data-reveal>
+        <sc-for list="{{ events }}" as="ev" hint-placeholder-count="3">
+          <a href="{{ ev.href }}" style="display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); border-radius: 4px; padding: 24px; text-decoration: none; background: var(--panel)" style-hover="border-color: var(--blue)">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: var(--blue)">{{ ev.date }}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #00A3A3; border: 1px solid var(--teal-border); border-radius: 3px; padding: 3px 8px">{{ ev.type }}</span>
+            </div>
+            <span style="font-size: 17.5px; font-weight: 600; color: var(--text); text-wrap: pretty">{{ ev.title }}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-2)">{{ ev.loc }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-screen-label="Competitions preview" style="max-width: 1280px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; justify-content: center">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 24px">
+        <div style="display: flex; flex-direction: column"><span data-reveal style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kComps }}</span><h2 data-reveal style="margin: 10px 0 0; font-size: clamp(34px, 5vw, 56px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.05; color: var(--text)">{{ hComps }}</h2></div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px"><span data-reveal aria-hidden="true" style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(56px, 9vw, 128px); line-height: 0.85; font-weight: 600; color: transparent; -webkit-text-stroke: 1.5px var(--border-2)">03</span><a href="competitions.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--blue); text-decoration: none">{{ viewAll }} →</a></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 20px; margin-top: clamp(28px, 5vh, 52px)" data-reveal>
+        <sc-for list="{{ comps }}" as="c" hint-placeholder-count="2">
+          <a href="competitions.dc.html" style="display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border); border-radius: 4px; padding: 26px; text-decoration: none" style-hover="border-color: var(--blue)">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #00A3A3; border: 1px solid var(--teal-border); border-radius: 3px; padding: 4px 9px; align-self: flex-start">{{ c.status }}</span>
+            <span style="font-size: 20px; font-weight: 700; color: var(--text); text-wrap: pretty">{{ c.title }}</span>
+            <div style="display: flex; gap: 10px; align-items: baseline">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-2)">{{ deadlineLabel }}</span>
+              <span style="font-size: 14.5px; font-weight: 600; color: var(--text)">{{ c.deadline }}</span>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-screen-label="News preview" style="max-width: 1280px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; justify-content: center">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 24px">
+        <div style="display: flex; flex-direction: column"><span data-reveal style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kNews }}</span><h2 data-reveal style="margin: 10px 0 0; font-size: clamp(34px, 5vw, 56px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.05; color: var(--text)">{{ hNews }}</h2></div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px"><span data-reveal aria-hidden="true" style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(56px, 9vw, 128px); line-height: 0.85; font-weight: 600; color: transparent; -webkit-text-stroke: 1.5px var(--border-2)">04</span><a href="news.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--blue); text-decoration: none">{{ viewAll }} →</a></div>
+      </div>
+      <div style="display: flex; flex-direction: column; margin-top: 16px">
+        <sc-for list="{{ newsItems }}" as="n" hint-placeholder-count="3">
+          <a href="news.dc.html" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 24px; padding: 18px 4px; border-top: 1px solid var(--border); text-decoration: none" style-hover="background: var(--bg-subtle)">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-2); flex: none; width: 92px">{{ n.date }}</span>
+            <span style="flex: 1 1 320px; font-size: 16px; font-weight: 600; color: var(--text); text-wrap: pretty">{{ n.title }}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--blue); flex: none">{{ n.source }}</span>
+          </a>
+        </sc-for>
+        <div style="border-top: 1px solid var(--border)"></div>
+      </div>
+    </section>
+
+    <section data-screen-label="Gallery preview" style="max-width: 1280px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; justify-content: center">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 24px">
+        <div style="display: flex; flex-direction: column"><span data-reveal style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kGallery }}</span><h2 data-reveal style="margin: 10px 0 0; font-size: clamp(34px, 5vw, 56px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.05; color: var(--text)">{{ hGallery }}</h2></div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px"><span data-reveal aria-hidden="true" style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(56px, 9vw, 128px); line-height: 0.85; font-weight: 600; color: transparent; -webkit-text-stroke: 1.5px var(--border-2)">06</span><a href="gallery.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--blue); text-decoration: none">{{ viewAll }} →</a></div>
+      </div>
+      <div style="display: flex; gap: 16px; margin-top: 24px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch">
+        <sc-for list="{{ galleryTiles }}" as="ph" hint-placeholder-count="5">
+          <a href="gallery.dc.html" style="flex: none; width: 240px; height: 160px; display: flex; flex-direction: column; justify-content: flex-end; border: 1px solid var(--border); border-radius: 4px; padding: 14px; box-sizing: border-box; text-decoration: none; background-color: #10264C; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px)" style-hover="border-color: var(--blue)">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #B9C4D4">{{ ph.caption }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-screen-label="QA preview" style="max-width: 1280px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; justify-content: center">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 24px">
+        <div style="display: flex; flex-direction: column"><span data-reveal style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kQa }}</span><h2 data-reveal style="margin: 10px 0 0; font-size: clamp(34px, 5vw, 56px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.05; color: var(--text)">{{ hQa }}</h2></div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px"><span data-reveal aria-hidden="true" style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(56px, 9vw, 128px); line-height: 0.85; font-weight: 600; color: transparent; -webkit-text-stroke: 1.5px var(--border-2)">07</span><a href="qa.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--blue); text-decoration: none">{{ viewAll }} →</a></div>
+      </div>
+      <div style="display: flex; flex-direction: column; margin-top: 16px; max-width: 860px">
+        <sc-for list="{{ qaItems }}" as="q" hint-placeholder-count="3">
+          <div style="border-top: 1px solid var(--border)">
+            <button onClick="{{ q.toggle }}" style="width: 100%; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; background: none; border: none; padding: 18px 4px; cursor: pointer; text-align: left">
+              <span style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 16px; font-weight: 600; color: var(--text); text-wrap: pretty">{{ q.question }}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 16px; color: var(--blue); flex: none">{{ q.sign }}</span>
+            </button>
+            <p style="display: {{ q.disp }}; margin: 0; padding: 0 4px 20px; font-size: 15px; line-height: 1.65; color: var(--text-2); text-wrap: pretty">{{ q.answer }}</p>
+          </div>
+        </sc-for>
+        <div style="border-top: 1px solid var(--border)"></div>
+      </div>
+    </section>
+
+    <section data-screen-label="Partners" style="max-width: 1280px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; justify-content: center">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ partnersTitle }}</span>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 20px; margin-top: 24px; perspective: 1100px">
+        <sc-for list="{{ partners }}" as="p" hint-placeholder-count="8">
+          <button onClick="{{ p.flip }}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 30px 18px; cursor: pointer; transform: rotateY({{ p.deg }}deg); transition: transform 0.85s cubic-bezier(0.45, 0, 0.2, 1); transform-style: preserve-3d" style-hover="border-color: var(--blue)">
+            <span style="display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; background: #0E2344; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 600; border-radius: 3px">{{ p.mark }}</span>
+            <span style="font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.02em">{{ p.name }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-screen-label="Contact band" style="max-width: 1280px; margin: 0 auto; padding: 48px 32px; box-sizing: border-box; min-height: 100svh; display: flex; flex-direction: column; justify-content: center">
+      <div style="background: #0E2344; background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px); background-size: 48px 48px; border-radius: 4px; padding: 44px clamp(24px, 4vw, 48px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 620px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kContact }}</span>
+          <p style="margin: 0; font-size: clamp(18px, 2.4vw, 22px); font-weight: 500; line-height: 1.45; color: #FFFFFF; text-wrap: pretty">{{ contactLead }}</p>
+        </div>
+        <a href="contact.dc.html" style="background: #0057B8; color: #FFFFFF; text-decoration: none; font-size: 15px; font-weight: 600; padding: 14px 26px; border-radius: 3px; flex: none" style-hover="background: #00A3A3; color: #FFFFFF">{{ join }}</a>
+      </div>
+    </section>
+
+    <section ref="{{ blackoutRef }}" data-screen-label="Blackout" style="height: 240vh; margin-top: 24px">
+      <div style="position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(4, 9, 17, {{ blackoutBg }})">
+        <h2 style="margin: 0; font-size: clamp(32px, 5.5vw, 68px); font-weight: 700; letter-spacing: -0.015em; color: #FFFFFF; text-align: center; max-width: 88vw; text-wrap: pretty; opacity: {{ qOpacity }}; transform: translateY({{ qShift }}px)">{{ blackoutQuestion }}</h2>
+        <a href="fields.dc.html" style="position: absolute; bottom: 12vh; background: transparent; color: #FFFFFF; text-decoration: none; font-size: 15px; font-weight: 600; padding: 15px 24px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.5); opacity: {{ btnOpacity }}; transform: translateY({{ btnShift }}px); max-width: 84vw; text-align: center" style-hover="border-color: #00A3A3; color: #00A3A3">{{ blackoutCta }} →</a>
+      </div>
+    </section>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en', showIntro: false, bp: 0, bv: 0, flips: {}, qaOpen: null, news: [] };
+  blackoutRef = React.createRef();
+
+  async componentDidMount() {
+    try {
+      if (!sessionStorage.getItem('nesu-intro-seen')) this.setState({ showIntro: true });
+    } catch (e) {}
+    this._onScroll = () => {
+      const el = this.blackoutRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const bv = Math.min(1, Math.max(0, (vh - r.top) / vh));
+      const bp = Math.min(1, Math.max(0, -r.top / (r.height - vh)));
+      if (Math.abs(bv - this.state.bv) > 0.01 || Math.abs(bp - this.state.bp) > 0.01) this.setState({ bv, bp });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._mqStrips = window.matchMedia('(min-width: 1080px)');
+    this._onMqStrips = () => this.setState({ strips: this._mqStrips.matches });
+    this._onMqStrips();
+    this._mqStrips.addEventListener('change', this._onMqStrips);
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    const d = await import(new URL('site-data.js', document.baseURI).href);
+    const nd = await import(new URL('news-data.js', document.baseURI).href);
+    this.m = m;
+    this.data = d;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    const [news] = await Promise.all([nd.getNewsItems(), m.load()]);
+    let cmsEvents = [];
+    try {
+      const cms = await import(new URL('cms-store.js', document.baseURI).href);
+      cmsEvents = cms.getPublishedEvents();
+    } catch (e) {}
+    let cmsPartners = [];
+    try {
+      const cms2 = await import(new URL('cms-store.js', document.baseURI).href);
+      cmsPartners = cms2.getPartners();
+    } catch (e) {}
+    this.setState({ news, cmsEvents, cmsPartners });
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+    if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
+    if (this._mqStrips) this._mqStrips.removeEventListener('change', this._onMqStrips);
+  }
+
+  hatch(op) {
+    return 'linear-gradient(rgba(4,9,17,0) 45%, rgba(4,9,17,0.8)), repeating-linear-gradient(45deg, rgba(255,255,255,' + op + ') 0, rgba(255,255,255,' + op + ') 2px, transparent 2px, transparent 10px)';
+  }
+
+  stripTiles() {
+    const evs = (this.state.cmsEvents || []).slice(0, 6);
+    const news = (this.state.news || []).slice(0, 6);
+    const a = evs.map((e) => ({
+      href: 'event-detail.dc.html?slug=' + e.slug,
+      label: (e.title && e.title.en) || '',
+      bg: e.photos && e.photos[0]
+        ? 'linear-gradient(rgba(4,9,17,0.05) 45%, rgba(4,9,17,0.8)), url("' + e.photos[0] + '")'
+        : this.hatch('0.06')
+    }));
+    const b = news.map((n) => ({
+      href: 'news.dc.html',
+      label: n.category,
+      bg: this.hatch('0.045')
+    }));
+    return { stripA: a.concat(a), stripB: b.concat(b) };
+  }
+
+  renderVals() {
+    const m = this.m;
+    const d = this.data;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const bp = this.state.bp;
+    const clamp01 = (v) => Math.min(1, Math.max(0, v));
+    const qO = clamp01((bp - 0.3) / 0.25);
+    const bO = clamp01((bp - 0.62) / 0.22);
+    const events = (d ? d.EVENTS : []).filter((e) => e.upcoming).slice(0, 3).map((e) => ({
+      href: 'event-detail.dc.html?id=' + e.id, date: e.date, type: e.type, title: e.title, loc: e.loc
+    }));
+    const comps = (d ? d.COMPETITIONS : []).filter((c) => c.open).slice(0, 2).map((c) => ({
+      title: c.title, deadline: c.deadline, status: t('competitions.statusOpen')
+    }));
+    const newsItems = this.state.news.slice(0, 3).map((n) => ({ date: n.date, title: n.title, source: n.source }));
+    const galleryTiles = (d ? d.GALLERY : []).slice(0, 5).map((p) => ({ caption: p.caption }));
+    const qaItems = ['1', '3', '5'].map((i) => ({
+      question: t('qa.q' + i),
+      answer: t('qa.a' + i),
+      sign: this.state.qaOpen === i ? '−' : '+',
+      disp: this.state.qaOpen === i ? 'block' : 'none',
+      toggle: () => this.setState((s) => ({ qaOpen: s.qaOpen === i ? null : i }))
+    }));
+    const partners = (d ? d.PARTNERS : []).map((p) => ({
+      name: p.name,
+      mark: p.mark,
+      deg: (this.state.flips[p.id] || 0) * 360,
+      flip: () => this.setState((s) => ({ flips: Object.assign({}, s.flips, { [p.id]: (s.flips[p.id] || 0) + 1 }) }))
+    }));
+    const strips = this.stripTiles();
+    const cmsPartners = (this.state.cmsPartners && this.state.cmsPartners.length ? this.state.cmsPartners : (d ? d.PARTNERS : [])).map((p) => ({
+      name: p.name, mark: p.mark, imgBg: p.img ? 'url("' + p.img + '")' : 'none', hasImg: !!p.img, noImg: !p.img
+    }));
+    return {
+      partnerLoop: cmsPartners.concat(cmsPartners),
+      hAbout: t('nav.about'),
+      hEvents: t('nav.events'),
+      hComps: t('nav.competitions'),
+      hNews: t('nav.news'),
+      hGallery: t('nav.gallery'),
+      hQa: t('nav.qa'),
+      showStrips: !!this.state.strips && (strips.stripA.length + strips.stripB.length) > 0,
+      stripA: strips.stripA,
+      stripB: strips.stripB,
+      showIntro: this.state.showIntro,
+      introDone: () => this.setState({ showIntro: false }),
+      annotation: t('brand.annotation'),
+      heroTitle: t('home.title'),
+      heroIntro: t('home.intro'),
+      ctaPrimary: t('home.ctaPrimary'),
+      ctaSecondary: t('home.ctaSecondary'),
+      viewAll: t('common.viewAll'),
+      learnMore: t('common.learnMore'),
+      kAbout: t('nav.about') ? '01 — ' + t('nav.about') : '',
+      kEvents: t('nav.events') ? '02 — ' + t('nav.events') : '',
+      kComps: t('nav.competitions') ? '03 — ' + t('nav.competitions') : '',
+      kNews: t('nav.news') ? '04 — ' + t('nav.news') : '',
+      kGallery: t('nav.gallery') ? '06 — ' + t('nav.gallery') : '',
+      kQa: t('nav.qa') ? '07 — ' + t('nav.qa') : '',
+      kContact: t('nav.contact') ? '08 — ' + t('nav.contact') : '',
+      aboutMission: t('footer.mission'),
+      aboutBody: t('about.missionBody'),
+      deadlineLabel: t('competitions.deadlineLabel'),
+      partnersTitle: t('about.partnersTitle'),
+      contactLead: t('home.contactLead'),
+      join: t('cta.join'),
+      events, comps, newsItems, galleryTiles, qaItems, partners,
+      blackoutRef: this.blackoutRef,
+      blackoutBg: Math.min(1, this.state.bv * 1.25).toFixed(3),
+      qOpacity: qO.toFixed(3),
+      qShift: Math.round((1 - qO) * 24),
+      btnOpacity: bO.toFixed(3),
+      btnShift: Math.round((1 - bO) * 16),
+      blackoutQuestion: t('blackout.question'),
+      blackoutCta: t('blackout.cta')
+    };
+  }
+}
+</script>
+</body>
+</html>

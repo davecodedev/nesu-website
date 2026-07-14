@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Events — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
+  <dc-import name="Header" active="events" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="Events" style="flex: 1">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 80px 32px 0">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3" data-reveal>{{ kicker }}</span>
+      <h1 data-reveal style="margin: 16px 0 0; font-size: 44px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
+      <p data-reveal style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
+      <div style="margin-top: 36px; display: flex; align-items: center; gap: 10px; max-width: 480px; border: 1px solid var(--border-2); border-radius: 3px; padding: 0 14px; background: var(--panel)">
+        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; flex: none; color: var(--text-2)" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <line x1="15.5" y1="15.5" x2="21" y2="21"></line>
+        </svg>
+        <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="{{ searchPlaceholder }}" style="flex: 1; border: none; outline: none; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; color: var(--text); padding: 12px 0; background: transparent">
+      </div>
+    </section>
+    <section style="max-width: 1280px; margin: 40px auto 0; padding: 0 32px 104px">
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px">
+        <sc-for list="{{ cards }}" as="ev" hint-placeholder-count="6">
+          <a href="{{ ev.href }}" style="display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; text-decoration: none; background: var(--panel)" style-hover="border-color: var(--blue)">
+            <sc-if value="{{ ev.hasCover }}" hint-placeholder-val="{{ false }}">
+              <div style="width: 100%; height: 170px; background-image: {{ ev.coverBg }}; background-size: cover; background-position: center"></div>
+            </sc-if>
+            <sc-if value="{{ ev.noCover }}" hint-placeholder-val="{{ true }}">
+              <div style="width: 100%; height: 170px; display: flex; align-items: flex-end; padding: 14px; box-sizing: border-box; background-color: #10264C; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px)">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #7A8CA6">NESU</span>
+              </div>
+            </sc-if>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 20px 22px 22px">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: var(--blue)">{{ ev.date }}</span>
+              <span style="font-size: 18px; font-weight: 600; line-height: 1.35; color: var(--text); text-wrap: pretty">{{ ev.title }}</span>
+              <sc-if value="{{ ev.hasLoc }}" hint-placeholder-val="{{ false }}">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-2)">{{ ev.loc }}</span>
+              </sc-if>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+      <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+        <div style="border: 1px dashed var(--border-2); border-radius: 4px; padding: 56px 32px; display: flex; justify-content: center">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text-2)">{{ noResultsMsg }}</span>
+        </div>
+      </sc-if>
+    </section>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en', query: '', events: [] };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    const cms = await import(new URL('cms-store.js', document.baseURI).href);
+    const fz = await import(new URL('fuzzy.js', document.baseURI).href);
+    this.m = m;
+    this.fz = fz;
+    this.setState({ lang: m.getLang(), events: cms.getPublishedEvents() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+  }
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const lang = this.state.lang;
+    let list = this.state.events;
+    if (this.fz && this.state.query.trim()) {
+      list = this.fz.fuzzyFilter(this.state.query, list, (e) =>
+        [e.title.en, e.title.uz, e.title.ru].join(' '));
+    }
+    const cards = list.map((e) => {
+      const cover = (e.photos && e.photos[0]) || '';
+      return {
+        href: 'event-detail.dc.html?slug=' + e.slug,
+        date: e.date,
+        title: e.title[lang] || e.title.en,
+        loc: e.loc || '',
+        hasLoc: !!e.loc,
+        coverBg: cover ? 'url("' + cover + '")' : 'none',
+        hasCover: !!cover,
+        noCover: !cover
+      };
+    });
+    return {
+      kicker: t('nav.events') ? '02 — ' + t('nav.events') : '',
+      title: t('events.title'),
+      intro: t('events.intro'),
+      searchPlaceholder: t('events.searchPlaceholder'),
+      noResultsMsg: t('events.noResults'),
+      query: this.state.query,
+      onQuery: (ev) => this.setState({ query: ev.target.value }),
+      cards,
+      noResults: cards.length === 0 && !!this.state.query.trim()
+    };
+  }
+}
+</script>
+</body>
+</html>

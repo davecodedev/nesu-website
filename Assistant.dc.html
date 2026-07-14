@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    @keyframes nesuDot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
+  </style>
+</helmet>
+<div style="position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+    <div style="width: min(360px, calc(100vw - 48px)); height: min(480px, calc(100vh - 128px)); background: var(--panel); border: 1px solid var(--border-2); border-radius: 6px; box-shadow: 0 16px 40px rgba(14, 35, 68, 0.25); display: flex; flex-direction: column; overflow: hidden">
+      <div style="background: #0E2344; padding: 14px 16px; display: flex; align-items: center; gap: 10px">
+        <svg viewBox="0 0 140 140" style="width: 26px; height: 26px; flex: none">
+          <circle cx="70" cy="70" r="62" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="9"></circle>
+          <g fill="#00A3A3" transform="translate(42,49) scale(0.9)">
+            <rect x="0" y="0" width="9" height="47"></rect>
+            <rect x="24" y="0" width="9" height="47"></rect>
+            <polygon points="11,2 17,2 24,45 18,45"></polygon>
+            <rect x="41" y="0" width="9" height="38"></rect>
+            <rect x="55" y="0" width="9" height="38"></rect>
+            <rect x="41" y="41" width="23" height="6"></rect>
+          </g>
+        </svg>
+        <span style="flex: 1; font-size: 14px; font-weight: 600; color: #FFFFFF">{{ headerTitle }}</span>
+        <button onClick="{{ toggle }}" aria-label="Close" style="background: none; border: none; cursor: pointer; color: #7A8CA6; font-size: 18px; line-height: 1; padding: 4px" style-hover="color: #FFFFFF">×</button>
+      </div>
+      <div ref="{{ scrollRef }}" style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--bg-subtle)">
+        <sc-for list="{{ messages }}" as="msg" hint-placeholder-count="1">
+          <div style="max-width: 82%; align-self: {{ msg.align }}; background: {{ msg.bg }}; color: {{ msg.color }}; border: 1px solid {{ msg.border }}; border-radius: {{ msg.radius }}; padding: 10px 14px; font-size: 14px; line-height: 1.5; text-wrap: pretty">{{ msg.text }}</div>
+        </sc-for>
+        <sc-if value="{{ typing }}" hint-placeholder-val="{{ false }}">
+          <div style="align-self: flex-start; background: var(--panel); border: 1px solid var(--border); border-radius: 8px 8px 8px 2px; padding: 12px 14px; display: flex; gap: 5px">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--text-2); animation: nesuDot 1.1s ease-in-out infinite"></span>
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--text-2); animation: nesuDot 1.1s ease-in-out 0.18s infinite"></span>
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--text-2); animation: nesuDot 1.1s ease-in-out 0.36s infinite"></span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showChips }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 4px">
+            <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="3">
+              <button onClick="{{ chip.ask }}" style="background: var(--panel); border: 1px solid var(--border-2); border-radius: 999px; padding: 8px 14px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--blue); text-align: left" style-hover="border-color: var(--blue)">{{ chip.label }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); background: var(--panel)">
+        <input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" placeholder="{{ placeholder }}" style="flex: 1; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; color: var(--text); padding: 10px 12px; border: 1px solid var(--border-2); border-radius: 3px; outline: none; min-width: 0" style-focus="border-color: var(--blue)">
+        <button onClick="{{ send }}" style="background: #0057B8; color: #FFFFFF; border: none; cursor: pointer; font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: 3px; flex: none" style-hover="background: #0E2344">{{ sendLabel }}</button>
+      </div>
+    </div>
+  </sc-if>
+  <button onClick="{{ toggle }}" aria-label="{{ headerTitle }}" style="width: 56px; height: 56px; border-radius: 50%; background: #0057B8; border: none; cursor: pointer; box-shadow: 0 8px 24px rgba(14, 35, 68, 0.35); display: flex; align-items: center; justify-content: center" style-hover="background: #0E2344">
+    <sc-if value="{{ openIcon }}" hint-placeholder-val="{{ false }}">
+      <span style="color: #FFFFFF; font-size: 22px; line-height: 1">×</span>
+    </sc-if>
+    <sc-if value="{{ chatIcon }}" hint-placeholder-val="{{ true }}">
+      <svg viewBox="0 0 24 24" style="width: 24px; height: 24px" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round">
+        <path d="M3 4 H21 V17 H12 L7 21 V17 H3 Z"></path>
+        <line x1="7" y1="9" x2="17" y2="9"></line>
+        <line x1="7" y1="12.5" x2="14" y2="12.5"></line>
+      </svg>
+    </sc-if>
+  </button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: &quot;420px&quot;, &quot;height&quot;: &quot;600px&quot;}, &quot;startOpen&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Behavior&quot;}}">
+class Component extends DCLogic {
+  state = { lang: 'en', open: false, messages: [], draft: '', typing: false, asked: false };
+  scrollRef = React.createRef();
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    const b = await import(new URL('assistant-backend.js', document.baseURI).href);
+    this.m = m;
+    this.backend = b;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    if (this.props.startOpen === 'true' || this.props.startOpen === true) this.setState({ open: true });
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+  }
+
+  componentDidUpdate() {
+    const el = this.scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }
+
+  t(k) { return this.m ? this.m.t(this.state.lang, k) : ''; }
+
+  ask(text) {
+    if (!text.trim() || this.state.typing || !this.backend) return;
+    this.setState((s) => ({ messages: s.messages.concat([{ role: 'user', text }]), draft: '', typing: true, asked: true }));
+    this.backend.sendMessageToAssistant(text).then((res) => {
+      const reply = res.text || this.t('assistant.a.' + (res.answerKey || 'fallback'));
+      this.setState((s) => ({ messages: s.messages.concat([{ role: 'bot', text: reply }]), typing: false }));
+    });
+  }
+
+  renderVals() {
+    const t = (k) => this.t(k);
+    const greeting = { role: 'bot', text: t('assistant.greeting') };
+    const messages = [greeting].concat(this.state.messages).filter((msg) => msg.text).map((msg) => ({
+      text: msg.text,
+      align: msg.role === 'user' ? 'flex-end' : 'flex-start',
+      bg: msg.role === 'user' ? '#0057B8' : 'var(--panel)',
+      color: msg.role === 'user' ? '#FFFFFF' : 'var(--text)',
+      border: msg.role === 'user' ? '#0057B8' : 'var(--border)',
+      radius: msg.role === 'user' ? '8px 8px 2px 8px' : '8px 8px 8px 2px'
+    }));
+    const chips = ['q1', 'q2', 'q3'].map((q) => ({
+      label: t('assistant.' + q),
+      ask: () => this.ask(t('assistant.' + q))
+    }));
+    return {
+      open: this.state.open,
+      openIcon: this.state.open,
+      chatIcon: !this.state.open,
+      toggle: () => this.setState((s) => ({ open: !s.open })),
+      headerTitle: t('assistant.title'),
+      placeholder: t('assistant.placeholder'),
+      sendLabel: t('assistant.send'),
+      messages,
+      typing: this.state.typing,
+      showChips: !this.state.asked && !this.state.typing,
+      chips,
+      draft: this.state.draft,
+      onDraft: (e) => this.setState({ draft: e.target.value }),
+      onKey: (e) => { if (e.key === 'Enter') this.ask(this.state.draft); },
+      send: () => this.ask(this.state.draft)
+    };
+  }
+}
+</script>
+</body>
+</html>

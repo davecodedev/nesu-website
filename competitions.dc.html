@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Competitions — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
+  <dc-import name="Header" active="competitions" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="Competitions" style="flex: 1">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 80px 32px 0">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3" data-reveal>{{ kicker }}</span>
+      <h1 data-reveal style="margin: 16px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
+      <p data-reveal style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
+    </section>
+    <section style="max-width: 1280px; margin: 56px auto 0; padding: 0 32px 104px; display: flex; flex-direction: column; gap: 24px">
+      <sc-for list="{{ comps }}" as="c" hint-placeholder-count="3">
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 30px clamp(20px, 3vw, 36px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 28px">
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: {{ c.statusColor }}; border: 1px solid {{ c.statusBorder }}; border-radius: 3px; padding: 4px 9px; align-self: flex-start">{{ c.status }}</span>
+            <span style="font-size: 24px; font-weight: 700; color: var(--text); text-wrap: pretty">{{ c.title }}</span>
+            <span style="font-size: 15px; line-height: 1.6; color: var(--text-2); text-wrap: pretty">{{ c.desc }}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 18px">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-2)">{{ deadlineLabel }}</span>
+              <span style="font-size: 15px; font-weight: 600; color: var(--text)">{{ c.deadline }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-2)">{{ entryLabel }}</span>
+              <span style="font-size: 15px; color: var(--text)">{{ c.entry }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #D4AF37">{{ winnersLabel }}</span>
+              <span style="font-size: 15px; color: var(--text)">{{ c.winner }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en' };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    const d = await import(new URL('site-data.js', document.baseURI).href);
+    this.m = m;
+    this.data = d;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+  }
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const comps = (this.data ? this.data.COMPETITIONS : []).map((c) => ({
+      title: c.title,
+      desc: c.desc,
+      deadline: c.deadline,
+      entry: c.entry,
+      winner: c.winner,
+      status: c.open ? t('competitions.statusOpen') : t('competitions.statusClosed'),
+      statusColor: c.open ? '#00A3A3' : 'var(--text-2)',
+      statusBorder: c.open ? 'var(--teal-border)' : 'var(--border-2)'
+    }));
+    return {
+      kicker: t('nav.competitions') ? '03 — ' + t('nav.competitions') : '',
+      title: t('competitions.title'),
+      intro: t('competitions.intro'),
+      deadlineLabel: t('competitions.deadlineLabel'),
+      entryLabel: t('competitions.entryLabel'),
+      winnersLabel: t('competitions.winnersLabel'),
+      comps
+    };
+  }
+}
+</script>
+</body>
+</html>

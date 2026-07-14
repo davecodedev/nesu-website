@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Gallery — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
+  <dc-import name="Header" active="gallery" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="Gallery" style="flex: 1">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 80px 32px 0">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3" data-reveal>{{ kicker }}</span>
+      <h1 data-reveal style="margin: 16px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
+      <p data-reveal style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
+      <p style="margin: 10px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-2)">{{ hint }}</p>
+    </section>
+    <section style="max-width: 1280px; margin: 48px auto 0; padding: 0 32px 104px; columns: 3 240px; column-gap: 20px">
+      <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="9">
+        <button onClick="{{ ph.open }}" style="display: flex; flex-direction: column; justify-content: flex-end; width: 100%; height: {{ ph.h }}px; margin: 0 0 20px; break-inside: avoid; border: 1px solid var(--border); border-radius: 4px; padding: 16px; box-sizing: border-box; cursor: zoom-in; background-color: #10264C; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px)" style-hover="border-color: var(--blue)">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.04em; color: #B9C4D4; text-align: left">{{ ph.caption }}</span>
+        </button>
+      </sc-for>
+    </section>
+    <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeLightbox }}" style="position: fixed; inset: 0; z-index: 500; background: rgba(10, 24, 48, 0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; cursor: zoom-out">
+        <div style="width: min(80vw, 900px); height: min(60vh, 560px); border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; background-color: #10264C; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 12px)"></div>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C7D0DD">{{ lightboxCaption }}</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #7A8CA6">ESC / CLICK</span>
+      </div>
+    </sc-if>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en', lightbox: null };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    const d = await import(new URL('site-data.js', document.baseURI).href);
+    this.m = m;
+    this.data = d;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    this._onKey = (e) => { if (e.key === 'Escape') this.setState({ lightbox: null }); };
+    window.addEventListener('keydown', this._onKey);
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+    window.removeEventListener('keydown', this._onKey);
+  }
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const photos = (this.data ? this.data.GALLERY : []).map((p) => ({
+      caption: p.caption,
+      h: p.h,
+      open: () => this.setState({ lightbox: p })
+    }));
+    return {
+      kicker: t('nav.gallery') ? '06 — ' + t('nav.gallery') : '',
+      title: t('gallery.title'),
+      intro: t('gallery.intro'),
+      hint: t('gallery.hint'),
+      photos,
+      lightboxOpen: !!this.state.lightbox,
+      lightboxCaption: this.state.lightbox ? this.state.lightbox.caption : '',
+      closeLightbox: () => this.setState({ lightbox: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    @keyframes nesuGlitch {
+      0% { clip-path: inset(0 0 0 0); transform: translate(0, 0); filter: none; }
+      8% { clip-path: inset(8% 0 72% 0); transform: translate(-9px, 2px); filter: drop-shadow(3px 0 #0057B8) drop-shadow(-3px 0 #00A3A3); }
+      16% { clip-path: inset(64% 0 6% 0); transform: translate(7px, -3px); filter: drop-shadow(-4px 0 #0057B8) drop-shadow(4px 0 #00A3A3); }
+      24% { clip-path: inset(30% 0 44% 0); transform: translate(-12px, 1px) skewX(2deg); filter: drop-shadow(5px 0 #00A3A3); }
+      32% { clip-path: inset(0 0 0 0); transform: translate(3px, 0); filter: none; }
+      42% { clip-path: inset(78% 0 2% 0); transform: translate(10px, 3px); filter: drop-shadow(-3px 0 #0057B8) drop-shadow(3px 0 #00A3A3); }
+      52% { clip-path: inset(4% 0 88% 0); transform: translate(-6px, -2px) skewX(-1.5deg); filter: drop-shadow(4px 0 #0057B8); }
+      62% { clip-path: inset(46% 0 22% 0); transform: translate(8px, 1px); filter: drop-shadow(-5px 0 #00A3A3) drop-shadow(2px 0 #0057B8); }
+      72% { clip-path: inset(0 0 0 0); transform: translate(-2px, 0); filter: none; }
+      82% { clip-path: inset(20% 0 60% 0); transform: translate(4px, -1px); filter: drop-shadow(2px 0 #0057B8) drop-shadow(-2px 0 #00A3A3); }
+      92% { clip-path: inset(0 0 0 0); transform: translate(1px, 0); filter: none; }
+      100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); filter: none; }
+    }
+    @keyframes nesuGlitchPage {
+      0% { clip-path: inset(0); transform: translate(0, 0); filter: none; }
+      7% { clip-path: inset(4% 0 74% 0); transform: translate(-14px, 3px); filter: drop-shadow(5px 0 #0057B8) drop-shadow(-5px 0 #00A3A3); }
+      14% { clip-path: inset(60% 0 3% 0); transform: translate(11px, -4px) skewX(-2deg); filter: drop-shadow(-6px 0 #0057B8); }
+      21% { clip-path: inset(0); transform: translate(0, 0); filter: invert(0.92) hue-rotate(180deg); }
+      26% { clip-path: inset(26% 0 48% 0); transform: translate(-8px, 2px); filter: drop-shadow(6px 0 #00A3A3); }
+      36% { clip-path: inset(82% 0 0 0); transform: translate(16px, 5px) skewX(3deg); filter: drop-shadow(-4px 0 #0057B8) drop-shadow(4px 0 #00A3A3); }
+      44% { clip-path: inset(0); transform: translate(-3px, 0); filter: saturate(0.2) contrast(1.4); }
+      54% { clip-path: inset(10% 0 62% 0); transform: translate(9px, -2px); filter: drop-shadow(5px 0 #0057B8); }
+      62% { clip-path: inset(0); transform: translate(0, 0); filter: invert(0.92) hue-rotate(180deg); }
+      66% { clip-path: inset(44% 0 30% 0); transform: translate(-11px, 3px) skewX(-1.5deg); filter: drop-shadow(-5px 0 #00A3A3); }
+      76% { clip-path: inset(0); transform: translate(4px, 0); filter: none; }
+      86% { clip-path: inset(18% 0 66% 0); transform: translate(-5px, -1px); filter: drop-shadow(3px 0 #0057B8) drop-shadow(-3px 0 #00A3A3); }
+      94% { clip-path: inset(0); transform: translate(1px, 0); filter: none; }
+      100% { clip-path: inset(0); transform: translate(0, 0); filter: none; }
+    }
+    @keyframes nesuTear {
+      0% { transform: translateY(-120%) skewY(-1.5deg); }
+      100% { transform: translateY(110vh) skewY(1.5deg); }
+    }
+    @keyframes nesuScanFlicker {
+      0%, 100% { opacity: 0.9; } 15% { opacity: 0.2; } 30% { opacity: 1; } 45% { opacity: 0.35; } 60% { opacity: 0.85; } 75% { opacity: 0.15; } 90% { opacity: 0.7; }
+    }
+  </style>
+</helmet>
+<sc-if value="{{ showStatement }}" hint-placeholder-val="{{ false }}">
+  <div style="position: fixed; inset: 0; z-index: 3100; background: #05090F; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 32px; box-sizing: border-box; opacity: {{ statementOpacity }}; transition: opacity 0.5s ease">
+    <div style="position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(255,255,255,0.035) 3px, rgba(255,255,255,0.035) 4px)"></div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.3em; color: #00A3A3">SYSTEM FAILURE // REBUILDING</span>
+    <p style="margin: 0; font-size: clamp(26px, 4.6vw, 54px); font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; color: #FFFFFF; text-align: center; max-width: 900px; text-wrap: pretty; text-shadow: 3px 0 rgba(0, 87, 184, 0.8), -3px 0 rgba(0, 163, 163, 0.8)">{{ glitchLine }}</p>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.2em; color: #7A8CA6">— NESU</span>
+  </div>
+</sc-if>
+<sc-if value="{{ glitching }}" hint-placeholder-val="{{ false }}">
+  <div style="position: fixed; inset: 0; z-index: 3000; pointer-events: none; overflow: hidden">
+    <div style="position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(14, 35, 68, 0.12) 3px, rgba(14, 35, 68, 0.12) 4px); animation: nesuScanFlicker 0.9s steps(1, end) 1"></div>
+    <div style="position: absolute; left: -5%; width: 110%; height: 46px; background: rgba(0, 87, 184, 0.28); box-shadow: 0 0 24px rgba(0, 87, 184, 0.5); animation: nesuTear 0.45s linear 2"></div>
+    <div style="position: absolute; left: -5%; width: 110%; height: 20px; background: rgba(0, 163, 163, 0.3); box-shadow: 0 0 18px rgba(0, 163, 163, 0.55); animation: nesuTear 0.9s linear 1 0.1s"></div>
+    <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.3em; color: #00A3A3; text-shadow: 2px 0 #0057B8, -2px 0 #FFFFFF; animation: nesuScanFlicker 0.9s steps(1, end) 1">SIGNAL // LOST</span>
+  </div>
+</sc-if>
+<footer ref="{{ footRef }}" data-nesu-footer="1" style="background: #0E2344; color: #FFFFFF; font-family: 'IBM Plex Sans', system-ui, sans-serif; position: relative; clip-path: {{ tornClip }}">
+  <div style="animation: {{ glitchAnim }}">
+    <div style="position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(255,255,255,0.045) 3px, rgba(255,255,255,0.045) 4px); opacity: {{ scanOpacity }}; animation: {{ scanAnim }}"></div>
+    <svg viewBox="0 0 1200 400" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: {{ crackOpacity }}; transition: opacity 0.6s ease" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1">
+      <polyline points="60,0 74,42 58,78 90,120 76,168"></polyline>
+      <polyline points="74,42 108,54 128,44"></polyline>
+      <polyline points="1130,400 1112,352 1136,310 1104,268"></polyline>
+      <polyline points="1112,352 1082,340 1064,352"></polyline>
+      <polyline points="420,400 436,370 424,338"></polyline>
+      <polyline points="980,0 966,30 984,66 962,92"></polyline>
+    </svg>
+    <div style="max-width: 1280px; margin: 0 auto; padding: 72px 32px 0; position: relative">
+      <p style="margin: 0 0 56px; font-size: clamp(24px, 3vw, 34px); font-weight: 700; line-height: 1.35; color: #FFFFFF; max-width: 880px; letter-spacing: -0.01em; text-wrap: pretty; text-shadow: 2px 0 rgba(0, 87, 184, 0.75), -2px 0 rgba(0, 163, 163, 0.75); opacity: {{ lineOpacity }}; transform: {{ lineShift }}; transition: opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s">{{ glitchLine }}</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 48px 32px">
+        <div style="display: flex; flex-direction: column; gap: 24px; transform: {{ t1 }}">
+          <sc-if value="{{ hasSealImg }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ sealImg }}" alt="NESU seal" style="width: 96px; height: 96px; object-fit: contain">
+          </sc-if>
+          <svg viewBox="0 0 140 140" style="width: 96px; height: 96px; display: {{ sealSvgDisplay }}" aria-label="NESU seal">
+            <g fill="rgba(255,255,255,0.9)">
+              <rect x="64" y="4" width="12" height="14"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(30 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(60 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(90 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(120 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(150 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(180 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(210 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(240 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(270 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(300 70 70)"></rect>
+              <rect x="64" y="4" width="12" height="14" transform="rotate(330 70 70)"></rect>
+            </g>
+            <circle cx="70" cy="70" r="47" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="8"></circle>
+            <circle cx="70" cy="70" r="36" fill="none" stroke="#00A3A3" stroke-width="1.5"></circle>
+            <g fill="#FFFFFF" transform="translate(45,63) scale(0.214)">
+              <rect x="0" y="0" width="12" height="70"></rect>
+              <rect x="36" y="0" width="12" height="70"></rect>
+              <polygon points="14,2 24,2 34,68 24,68"></polygon>
+              <rect x="62" y="0" width="12" height="70"></rect>
+              <rect x="78" y="0" width="30" height="12"></rect>
+              <rect x="78" y="29" width="24" height="12"></rect>
+              <rect x="78" y="58" width="30" height="12"></rect>
+              <rect x="124" y="0" width="48" height="12"></rect>
+              <rect x="124" y="15" width="12" height="11"></rect>
+              <rect x="124" y="29" width="48" height="12"></rect>
+              <rect x="160" y="44" width="12" height="11"></rect>
+              <rect x="124" y="58" width="48" height="12"></rect>
+              <rect x="186" y="0" width="12" height="55"></rect>
+              <rect x="222" y="0" width="12" height="55"></rect>
+              <rect x="186" y="58" width="48" height="12"></rect>
+            </g>
+          </svg>
+          <p style="margin: 0; font-size: 19px; font-weight: 500; line-height: 1.45; color: #FFFFFF; max-width: 380px; text-wrap: pretty">{{ mission }}</p>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #7A8CA6">{{ annotation }}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px; transform: {{ t2 }}">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #00A3A3">{{ pagesTitle }}</span>
+          <sc-for list="{{ pageLinks }}" as="item" hint-placeholder-count="9">
+            <a href="{{ item.href }}" style="font-size: 14px; color: #C7D0DD; text-decoration: none" style-hover="color: #FFFFFF">{{ item.label }}</a>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px; transform: {{ t3 }}">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #00A3A3">{{ contactTitle }}</span>
+          <span style="font-size: 14px; color: #C7D0DD; line-height: 1.5">{{ city }}</span>
+          <a href="mailto:info@nesu.uz" style="font-size: 14px; color: #C7D0DD; text-decoration: none" style-hover="color: #FFFFFF">{{ email }}</a>
+          <a href="contact.dc.html" style="font-size: 14px; color: #FFFFFF; font-weight: 600; text-decoration: none" style-hover="color: #00A3A3">{{ join }} →</a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px; transform: {{ t4 }}">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #00A3A3">{{ followTitle }}</span>
+          <a href="#" style="font-size: 14px; color: #C7D0DD; text-decoration: none" style-hover="color: #FFFFFF">Telegram</a>
+          <a href="#" style="font-size: 14px; color: #C7D0DD; text-decoration: none" style-hover="color: #FFFFFF">LinkedIn</a>
+          <a href="#" style="font-size: 14px; color: #C7D0DD; text-decoration: none" style-hover="color: #FFFFFF">YouTube</a>
+          <a href="#" style="font-size: 14px; color: #C7D0DD; text-decoration: none" style-hover="color: #FFFFFF">Instagram</a>
+        </div>
+      </div>
+      <div style="margin-top: 48px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.12); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px; transform: {{ t5 }}">
+        <span style="font-size: 12.5px; color: #7A8CA6">{{ rights }}</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; color: #7A8CA6">UZ · EN · RU</span>
+      </div>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: &quot;1280px&quot;, &quot;height&quot;: &quot;640px&quot;}}">
+class Component extends DCLogic {
+  state = { lang: 'en', phase: 'idle' };
+  footRef = React.createRef();
+
+  async componentDidMount() {
+    this._readLogos = () => {
+      try { this.setState({ logos: JSON.parse(localStorage.getItem('nesu-cms-logos') || '{}') }); }
+      catch (e) { this.setState({ logos: {} }); }
+    };
+    this._readLogos();
+    window.addEventListener('nesu-content-changed', this._readLogos);
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    this.m = m;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    const trigger = () => {
+      if (this.state.phase !== 'idle') return;
+      this.setState({ phase: 'glitch' });
+      // the whole window breaks, not just the footer
+      try { document.body.style.animation = 'nesuGlitchPage 0.95s steps(1, end) 1'; } catch (e) {}
+      this._t = setTimeout(() => {
+        try { document.body.style.animation = ''; } catch (e) {}
+        this.setState({ phase: 'statement' });
+      }, 950);
+      this._t2 = setTimeout(() => this.setState({ phase: 'fading' }), 3400);
+      this._t3 = setTimeout(() => this.setState({ phase: 'settled' }), 3950);
+      if (this._io) this._io.disconnect();
+      if (this._poll) clearInterval(this._poll);
+      if (this._onScrollChk) window.removeEventListener('scroll', this._onScrollChk);
+    };
+    this._io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) trigger();
+    }, { threshold: 0.18 });
+    // The ref may not be attached yet while the template streams — retry until it is,
+    // with a scroll-position fallback check.
+    const getEl = () => this.footRef.current || document.querySelector('[data-nesu-footer]');
+    this._onScrollChk = () => {
+      const el = getEl();
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      if (r.height > 0 && r.top < window.innerHeight - Math.min(r.height, window.innerHeight) * 0.18) trigger();
+    };
+    window.addEventListener('scroll', this._onScrollChk, { passive: true });
+    this._poll = setInterval(() => {
+      const el = getEl();
+      if (!el) return;
+      if (!this._observed) {
+        this._io.observe(el);
+        this._observed = true;
+      }
+      // also check position directly (covers pages loaded already scrolled to bottom)
+      this._onScrollChk();
+    }, 200);
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+    if (this._io) this._io.disconnect();
+    if (this._t) clearTimeout(this._t);
+    if (this._t2) clearTimeout(this._t2);
+    if (this._t3) clearTimeout(this._t3);
+    if (this._poll) clearInterval(this._poll);
+    if (this._onScrollChk) window.removeEventListener('scroll', this._onScrollChk);
+    if (this._readLogos) window.removeEventListener('nesu-content-changed', this._readLogos);
+  }
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const pageLinks = (m ? m.NAV : []).map((d) => ({ href: d.href, label: t('nav.' + d.key) }));
+    const phase = this.state.phase;
+    const glitching = phase === 'glitch';
+    const statement = phase === 'statement' || phase === 'fading';
+    const settled = phase === 'settled' || phase === 'statement' || phase === 'fading';
+    const torn = 'polygon(0 18px, 4% 6px, 9% 20px, 15% 4px, 21% 16px, 28% 8px, 34% 22px, 41% 5px, 48% 18px, 55% 9px, 62% 21px, 69% 6px, 76% 17px, 83% 10px, 90% 20px, 96% 7px, 100% 15px, 100% 100%, 0 100%)';
+    const logos = this.state.logos || {};
+    return {
+      hasSealImg: !!logos.seal,
+      sealImg: logos.seal || '',
+      sealSvgDisplay: logos.seal ? 'none' : 'block',
+      footRef: this.footRef,
+      glitching,
+      showStatement: statement,
+      statementOpacity: phase === 'fading' ? 0 : 1,
+      tornClip: settled ? torn : 'none',
+      glitchAnim: glitching ? 'nesuGlitch 0.9s steps(1, end) 1' : 'none',
+      scanAnim: glitching ? 'nesuScanFlicker 0.9s steps(1, end) 1' : 'none',
+      scanOpacity: settled ? 0.5 : (glitching ? 1 : 0),
+      crackOpacity: settled ? 1 : 0,
+      lineOpacity: settled ? 1 : 0,
+      lineShift: settled ? 'translateY(0)' : 'translateY(14px)',
+      t1: settled ? 'translate(2px, 3px) rotate(-0.35deg)' : 'none',
+      t2: settled ? 'translate(-3px, 7px) rotate(0.45deg)' : 'none',
+      t3: settled ? 'translate(2px, -2px) rotate(-0.3deg)' : 'none',
+      t4: settled ? 'translate(-2px, 5px) rotate(0.5deg)' : 'none',
+      t5: settled ? 'rotate(0.25deg)' : 'none',
+      glitchLine: t('footer.glitchLine'),
+      mission: t('footer.mission'),
+      annotation: t('brand.annotation'),
+      pagesTitle: t('footer.pagesTitle'),
+      contactTitle: t('footer.contactTitle'),
+      followTitle: t('footer.followTitle'),
+      city: t('footer.city'),
+      email: t('footer.email'),
+      join: t('cta.join'),
+      rights: t('footer.rights'),
+      pageLinks
+    };
+  }
+}
+</script>
+</body>
+</html>

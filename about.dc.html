@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>About — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
+  <dc-import name="Header" active="about" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="About" style="flex: 1">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 80px 32px 0">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3" data-reveal>{{ kicker }}</span>
+      <h1 data-reveal style="margin: 16px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
+      <p data-reveal style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
+    </section>
+    <section style="max-width: 1280px; margin: 56px auto 0; padding: 0 32px">
+      <div style="background: #0E2344; background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px); background-size: 48px 48px; border-radius: 4px; padding: 56px clamp(24px, 5vw, 56px) 60px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ missionTitle }}</span>
+        <p style="margin: 18px 0 0; font-size: 26px; font-weight: 500; line-height: 1.45; color: #FFFFFF; max-width: 860px; text-wrap: pretty">{{ missionBody }}</p>
+      </div>
+    </section>
+    <section style="max-width: 1280px; margin: 56px auto 0; padding: 0 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px">
+      <div style="border: 1px solid var(--border); border-radius: 4px; padding: 32px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-2)">{{ whoTitle }}</span>
+        <p style="margin: 14px 0 0; font-size: 16px; line-height: 1.65; color: var(--text-2); text-wrap: pretty">{{ whoBody }}</p>
+      </div>
+      <div style="border: 1px solid var(--border); border-radius: 4px; padding: 32px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-2)">{{ historyTitle }}</span>
+        <p style="margin: 14px 0 0; font-size: 16px; line-height: 1.65; color: var(--text-2); text-wrap: pretty">{{ historyBody }}</p>
+      </div>
+    </section>
+    <section style="max-width: 1280px; margin: 72px auto 0; padding: 0 32px 104px">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ partnersTitle }}</span>
+      <p style="margin: 12px 0 0; font-size: 15px; color: var(--text-2)">{{ partnersHint }}</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 20px; margin-top: 28px; perspective: 1100px">
+        <sc-for list="{{ partners }}" as="p" hint-placeholder-count="8">
+          <button onClick="{{ p.flip }}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 34px 18px; cursor: pointer; transform: rotateY({{ p.deg }}deg); transition: transform 0.85s cubic-bezier(0.45, 0, 0.2, 1); transform-style: preserve-3d" style-hover="border-color: var(--blue)">
+            <sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ false }}">
+              <div role="img" aria-label="{{ p.name }}" style="height: 56px; width: 140px; background-image: {{ p.imgBg }}; background-size: contain; background-repeat: no-repeat; background-position: center"></div>
+            </sc-if>
+            <sc-if value="{{ p.noImg }}" hint-placeholder-val="{{ true }}">
+            <span style="display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; background: #0E2344; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600; border-radius: 3px">{{ p.mark }}</span>
+            </sc-if>
+            <span style="font-size: 14.5px; font-weight: 600; color: var(--text); letter-spacing: 0.02em">{{ p.name }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en', flips: {} };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    const d = await import(new URL('site-data.js', document.baseURI).href);
+    this.m = m;
+    this.data = d;
+    try {
+      const cms = await import(new URL('cms-store.js', document.baseURI).href);
+      this.setState({ cmsPartners: cms.getPartners() });
+    } catch (e) {}
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+  }
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const list = (this.state.cmsPartners && this.state.cmsPartners.length) ? this.state.cmsPartners : (this.data ? this.data.PARTNERS : []);
+    const partners = list.map((p) => ({
+      name: p.name,
+      mark: p.mark,
+      imgBg: p.img ? 'url("' + p.img + '")' : 'none',
+      hasImg: !!p.img,
+      noImg: !p.img,
+      deg: (this.state.flips[p.id] || 0) * 360,
+      flip: () => this.setState((s) => ({ flips: Object.assign({}, s.flips, { [p.id]: (s.flips[p.id] || 0) + 1 }) }))
+    }));
+    return {
+      kicker: t('nav.about') ? '01 — ' + t('nav.about') : '',
+      title: t('about.title'),
+      intro: t('about.intro'),
+      missionTitle: t('about.missionTitle'),
+      missionBody: t('about.missionBody'),
+      whoTitle: t('about.whoTitle'),
+      whoBody: t('about.whoBody'),
+      historyTitle: t('about.historyTitle'),
+      historyBody: t('about.historyBody'),
+      partnersTitle: t('about.partnersTitle'),
+      partnersHint: t('about.partnersHint'),
+      partners
+    };
+  }
+}
+</script>
+</body>
+</html>

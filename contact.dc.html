@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Contact — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
+  <dc-import name="Header" active="contact" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="Contact" style="flex: 1">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 80px 32px 0">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3" data-reveal>{{ kicker }}</span>
+      <h1 data-reveal style="margin: 16px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
+      <p data-reveal style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
+    </section>
+    <section style="max-width: 1280px; margin: 56px auto 0; padding: 0 32px 104px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 32px; align-items: start">
+      <div style="border: 1px solid var(--border); border-radius: 4px; padding: 36px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-2)">{{ formTitle }}</span>
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <p style="margin: 20px 0 0; font-size: 16px; line-height: 1.6; color: var(--text); background: var(--teal-bg); border: 1px solid var(--teal-border); border-radius: 4px; padding: 18px 20px">{{ sentMsg }}</p>
+        </sc-if>
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-direction: column; gap: 18px; margin-top: 24px">
+            <label style="display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text)">{{ nameLabel }}</span>
+              <input value="{{ name }}" onChange="{{ onName }}" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; color: var(--text); padding: 11px 14px; border: 1px solid {{ nameBorder }}; border-radius: 3px; outline: none" style-focus="border-color: var(--blue)">
+              <span style="font-size: 12px; color: #B4232A; min-height: 1px">{{ nameErr }}</span>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text)">{{ emailLabel }}</span>
+              <input value="{{ email }}" onChange="{{ onEmail }}" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; color: var(--text); padding: 11px 14px; border: 1px solid {{ emailBorder }}; border-radius: 3px; outline: none" style-focus="border-color: var(--blue)">
+              <span style="font-size: 12px; color: #B4232A; min-height: 1px">{{ emailErr }}</span>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text)">{{ messageLabel }}</span>
+              <textarea value="{{ message }}" onChange="{{ onMessage }}" rows="5" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; color: var(--text); padding: 11px 14px; border: 1px solid {{ messageBorder }}; border-radius: 3px; outline: none; resize: vertical" style-focus="border-color: var(--blue)"></textarea>
+              <span style="font-size: 12px; color: #B4232A; min-height: 1px">{{ messageErr }}</span>
+            </label>
+            <button onClick="{{ submit }}" style="align-self: flex-start; background: #0057B8; color: #FFFFFF; border: none; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; font-weight: 600; padding: 13px 26px; border-radius: 3px" style-hover="background: #0E2344">{{ sendLabel }}</button>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 24px">
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-2)">{{ detailsTitle }}</span>
+          <a href="mailto:info@nesu.uz" style="font-size: 15px; color: var(--blue); text-decoration: none" style-hover="color: var(--text)">info@nesu.uz</a>
+          <span style="font-size: 15px; color: var(--text)">+998 71 200-00-00</span>
+          <span style="font-size: 15px; color: var(--text-2)">{{ mapNote }}</span>
+        </div>
+        <div style="border: 1px solid var(--border); border-radius: 4px; overflow: hidden">
+          <svg viewBox="0 0 400 260" style="width: 100%; display: block; background: #0E2344">
+            <g stroke="rgba(255,255,255,0.14)" stroke-width="3">
+              <line x1="0" y1="70" x2="400" y2="55"></line>
+              <line x1="0" y1="140" x2="400" y2="130"></line>
+              <line x1="0" y1="210" x2="400" y2="205"></line>
+              <line x1="80" y1="0" x2="95" y2="260"></line>
+              <line x1="190" y1="0" x2="200" y2="260"></line>
+              <line x1="300" y1="0" x2="310" y2="260"></line>
+            </g>
+            <g stroke="rgba(255,255,255,0.07)" stroke-width="1.5">
+              <line x1="0" y1="35" x2="400" y2="25"></line>
+              <line x1="0" y1="105" x2="400" y2="95"></line>
+              <line x1="0" y1="175" x2="400" y2="170"></line>
+              <line x1="40" y1="0" x2="50" y2="260"></line>
+              <line x1="140" y1="0" x2="148" y2="260"></line>
+              <line x1="250" y1="0" x2="258" y2="260"></line>
+              <line x1="350" y1="0" x2="358" y2="260"></line>
+            </g>
+            <circle cx="200" cy="132" r="26" fill="#00A3A3" opacity="0.18"></circle>
+            <circle cx="200" cy="132" r="9" fill="#00A3A3" stroke="#FFFFFF" stroke-width="2.5"></circle>
+            <text x="200" y="175" text-anchor="middle" fill="#C7D0DD" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="1">{{ mapTitle }}</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" start-open="true" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en', name: '', email: '', message: '', errs: {}, sent: false };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    this.m = m;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+  }
+
+  submit = () => {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const errs = {};
+    if (!this.state.name.trim()) errs.name = t('contact.required');
+    if (!this.state.email.trim()) errs.email = t('contact.required');
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email)) errs.email = t('contact.invalidEmail');
+    if (!this.state.message.trim()) errs.message = t('contact.required');
+    if (Object.keys(errs).length) { this.setState({ errs }); return; }
+    this.setState({ sent: true, errs: {} });
+  };
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const e = this.state.errs;
+    return {
+      kicker: t('nav.contact') ? '08 — ' + t('nav.contact') : '',
+      title: t('contact.title'),
+      intro: t('contact.intro'),
+      formTitle: t('contact.formTitle'),
+      nameLabel: t('contact.nameLabel'),
+      emailLabel: t('contact.emailLabel'),
+      messageLabel: t('contact.messageLabel'),
+      sendLabel: t('contact.send'),
+      sentMsg: t('contact.sent'),
+      detailsTitle: t('contact.detailsTitle'),
+      mapTitle: t('contact.mapTitle'),
+      mapNote: t('contact.mapNote'),
+      sent: this.state.sent,
+      notSent: !this.state.sent,
+      name: this.state.name,
+      email: this.state.email,
+      message: this.state.message,
+      onName: (ev) => this.setState({ name: ev.target.value }),
+      onEmail: (ev) => this.setState({ email: ev.target.value }),
+      onMessage: (ev) => this.setState({ message: ev.target.value }),
+      nameErr: e.name || '',
+      emailErr: e.email || '',
+      messageErr: e.message || '',
+      nameBorder: e.name ? '#B4232A' : '#C9D2DD',
+      emailBorder: e.email ? '#B4232A' : '#C9D2DD',
+      messageBorder: e.message ? '#B4232A' : '#C9D2DD',
+      submit: this.submit
+    };
+  }
+}
+</script>
+</body>
+</html>

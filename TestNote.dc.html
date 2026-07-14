@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+  </style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif">
+  <button onClick="{{ toggle }}" style="position: fixed; bottom: 24px; left: 24px; z-index: 890; display: flex; align-items: center; gap: 8px; background: #0E2344; border: 1px solid #D4AF37; border-radius: 999px; padding: 8px 14px; cursor: pointer; box-shadow: 0 6px 18px rgba(14, 35, 68, 0.3)">
+    <span style="width: 7px; height: 7px; border-radius: 50%; background: #D4AF37; flex: none"></span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; color: #FFFFFF; white-space: nowrap">{{ badge }}</span>
+  </button>
+  <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ close }}" style="position: fixed; inset: 0; z-index: 940; background: rgba(10, 24, 48, 0.6); display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box">
+      <div onClick="{{ swallow }}" style="width: min(480px, 100%); max-height: calc(100vh - 48px); overflow-y: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; color: #D4AF37; border: 1px solid #D4AF37; border-radius: 999px; padding: 4px 10px">{{ badge }}</span>
+          <button onClick="{{ close }}" aria-label="{{ closeLabel }}" style="background: none; border: none; cursor: pointer; font-size: 20px; line-height: 1; color: var(--text-2); padding: 4px" style-hover="color: var(--text)">×</button>
+        </div>
+        <h2 style="margin: 0; font-size: 21px; font-weight: 700; color: var(--text); text-wrap: pretty">{{ title }}</h2>
+        <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--text-2); text-wrap: pretty">{{ body }}</p>
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <p style="margin: 0; font-size: 15px; line-height: 1.55; color: var(--text); background: var(--teal-bg); border: 1px solid var(--teal-border); border-radius: 4px; padding: 14px 16px">{{ sentMsg }}</p>
+        </sc-if>
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <label style="display: flex; flex-direction: column; gap: 5px">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text)">{{ nameLabel }}</span>
+              <input value="{{ name }}" onChange="{{ onName }}" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14.5px; padding: 10px 12px; border: 1px solid var(--border-2); border-radius: 3px; outline: none" style-focus="border-color: var(--blue)">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 5px">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text)">{{ emailLabel }}</span>
+              <input value="{{ email }}" onChange="{{ onEmail }}" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14.5px; padding: 10px 12px; border: 1px solid {{ emailBorder }}; border-radius: 3px; outline: none" style-focus="border-color: var(--blue)">
+              <span style="font-size: 12px; color: #B4232A; min-height: 1px">{{ emailErr }}</span>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 5px">
+              <span style="font-size: 13px; font-weight: 600; color: var(--text)">{{ complaintLabel }}</span>
+              <textarea value="{{ complaint }}" onChange="{{ onComplaint }}" rows="4" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14.5px; padding: 10px 12px; border: 1px solid {{ complaintBorder }}; border-radius: 3px; outline: none; resize: vertical"></textarea>
+              <span style="font-size: 12px; color: #B4232A; min-height: 1px">{{ complaintErr }}</span>
+            </label>
+            <button onClick="{{ submit }}" style="align-self: flex-start; background: #0057B8; color: #FFFFFF; border: none; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14.5px; font-weight: 600; padding: 12px 22px" style-hover="background: #0E2344">{{ sendLabel }}</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: &quot;520px&quot;, &quot;height&quot;: &quot;620px&quot;}}">
+class Component extends DCLogic {
+  state = { lang: 'en', open: false, name: '', email: '', complaint: '', errs: {}, sent: false };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    this.cms = await import(new URL('cms-store.js', document.baseURI).href);
+    this.m = m;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+  }
+
+  submit = () => {
+    const t = (k) => (this.m ? this.m.t(this.state.lang, k) : '');
+    const errs = {};
+    if (!this.state.email.trim()) errs.email = t('contact.required');
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email)) errs.email = t('contact.invalidEmail');
+    if (!this.state.complaint.trim()) errs.complaint = t('contact.required');
+    if (Object.keys(errs).length) { this.setState({ errs }); return; }
+    if (this.cms) {
+      this.cms.saveReport({
+        name: this.state.name.trim(),
+        email: this.state.email.trim(),
+        complaint: this.state.complaint.trim(),
+        page: window.location.pathname
+      });
+    }
+    this.setState({ sent: true, errs: {} });
+  };
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const e = this.state.errs;
+    return {
+      badge: t('testnote.badge'),
+      title: t('testnote.title'),
+      body: t('testnote.body'),
+      nameLabel: t('testnote.nameLabel'),
+      emailLabel: t('testnote.emailLabel'),
+      complaintLabel: t('testnote.complaintLabel'),
+      sendLabel: t('testnote.send'),
+      sentMsg: t('testnote.sent'),
+      closeLabel: t('testnote.close'),
+      open: this.state.open,
+      toggle: () => this.setState((s) => ({ open: !s.open })),
+      close: () => this.setState({ open: false }),
+      swallow: (ev) => ev.stopPropagation(),
+      sent: this.state.sent,
+      notSent: !this.state.sent,
+      name: this.state.name,
+      email: this.state.email,
+      complaint: this.state.complaint,
+      onName: (ev) => this.setState({ name: ev.target.value }),
+      onEmail: (ev) => this.setState({ email: ev.target.value, errs: {} }),
+      onComplaint: (ev) => this.setState({ complaint: ev.target.value, errs: {} }),
+      emailErr: e.email || '',
+      complaintErr: e.complaint || '',
+      emailBorder: e.email ? '#B4232A' : 'var(--border-2)',
+      complaintBorder: e.complaint ? '#B4232A' : 'var(--border-2)',
+      submit: this.submit
+    };
+  }
+}
+</script>
+</body>
+</html>

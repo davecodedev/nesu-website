@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Admin login — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #0E2344; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: #0057B8; }
+    a:hover { color: #0E2344; }
+  </style>
+</helmet>
+<div data-screen-label="Admin Login" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #0E2344; background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px); background-size: 48px 48px; padding: 24px; box-sizing: border-box">
+  <div style="width: 360px; background: #FFFFFF; border-radius: 4px; padding: 36px; display: flex; flex-direction: column; gap: 18px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <svg viewBox="0 0 234 70" style="height: 22px; width: auto; align-self: flex-start" fill="#0E2344" aria-label="NESU">
+        <rect x="0" y="0" width="12" height="70"></rect>
+        <rect x="36" y="0" width="12" height="70"></rect>
+        <polygon points="14,2 24,2 34,68 24,68"></polygon>
+        <rect x="62" y="0" width="12" height="70"></rect>
+        <rect x="78" y="0" width="30" height="12"></rect>
+        <rect x="78" y="29" width="24" height="12"></rect>
+        <rect x="78" y="58" width="30" height="12"></rect>
+        <rect x="124" y="0" width="48" height="12"></rect>
+        <rect x="124" y="15" width="12" height="11"></rect>
+        <rect x="124" y="29" width="48" height="12"></rect>
+        <rect x="160" y="44" width="12" height="11"></rect>
+        <rect x="124" y="58" width="48" height="12"></rect>
+        <rect x="186" y="0" width="12" height="55"></rect>
+        <rect x="222" y="0" width="12" height="55"></rect>
+        <rect x="186" y="58" width="48" height="12"></rect>
+      </svg>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #4B5563">Admin panel</span>
+    </div>
+    <label style="display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 13px; font-weight: 600; color: #0E2344">Username</span>
+      <input value="{{ user }}" onChange="{{ onUser }}" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; color: #0E2344; padding: 10px 13px; border: 1px solid #C9D2DD; border-radius: 3px; outline: none" style-focus="border-color: #0057B8">
+    </label>
+    <label style="display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 13px; font-weight: 600; color: #0E2344">Password</span>
+      <input type="password" value="{{ pass }}" onChange="{{ onPass }}" onKeyDown="{{ onKey }}" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; color: #0E2344; padding: 10px 13px; border: 1px solid #C9D2DD; border-radius: 3px; outline: none" style-focus="border-color: #0057B8">
+    </label>
+    <span style="font-size: 13px; color: #B4232A; min-height: 16px">{{ error }}</span>
+    <button onClick="{{ submit }}" style="background: #0057B8; color: #FFFFFF; border: none; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; font-weight: 600; padding: 12px; border-radius: 3px" style-hover="background: #0E2344">Sign in</button>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #7A8CA6">Prototype credentials: admin / nesu2026</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { user: '', pass: '', error: '' };
+
+  async componentDidMount() {
+    this.cms = await import(new URL('cms-store.js', document.baseURI).href);
+    if (this.cms.isLoggedIn()) window.location.replace('admin-events.dc.html');
+  }
+
+  submit = () => {
+    if (!this.cms) return;
+    if (this.cms.login(this.state.user.trim(), this.state.pass)) {
+      window.location.href = 'admin-events.dc.html';
+    } else {
+      this.setState({ error: 'Invalid username or password.' });
+    }
+  };
+
+  renderVals() {
+    return {
+      user: this.state.user,
+      pass: this.state.pass,
+      error: this.state.error,
+      onUser: (e) => this.setState({ user: e.target.value, error: '' }),
+      onPass: (e) => this.setState({ pass: e.target.value, error: '' }),
+      onKey: (e) => { if (e.key === 'Enter') this.submit(); },
+      submit: this.submit
+    };
+  }
+}
+</script>
+</body>
+</html>

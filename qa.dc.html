@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Q&A — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
+  <dc-import name="Header" active="qa" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="QA" style="flex: 1">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 80px 32px 0">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3" data-reveal>{{ kicker }}</span>
+      <h1 data-reveal style="margin: 16px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
+      <p data-reveal style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
+    </section>
+    <section style="max-width: 1280px; margin: 40px auto 0; padding: 0 32px 104px; display: flex; flex-direction: column; gap: 48px">
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+        <div style="max-width: 860px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-2)">{{ g.label }}</span>
+          <div style="display: flex; flex-direction: column; margin-top: 14px">
+            <sc-for list="{{ g.items }}" as="q" hint-placeholder-count="2">
+              <div style="border-top: 1px solid var(--border)">
+                <button onClick="{{ q.toggle }}" style="width: 100%; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; background: none; border: none; padding: 20px 4px; cursor: pointer; text-align: left">
+                  <span style="font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 17px; font-weight: 600; color: {{ q.qColor }}; text-wrap: pretty">{{ q.question }}</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 17px; color: var(--blue); flex: none">{{ q.sign }}</span>
+                </button>
+                <p style="display: {{ q.disp }}; margin: 0; padding: 0 4px 22px; font-size: 15.5px; line-height: 1.65; color: var(--text-2); text-wrap: pretty">{{ q.answer }}</p>
+              </div>
+            </sc-for>
+            <div style="border-top: 1px solid var(--border)"></div>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en', open: null };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    this.m = m;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+  }
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const groupDefs = [
+      { cat: 'membership', qs: ['1', '2'] },
+      { cat: 'events', qs: ['3', '4'] },
+      { cat: 'general', qs: ['5', '6'] }
+    ];
+    const groups = groupDefs.map((g) => ({
+      label: t('qa.cat.' + g.cat),
+      items: g.qs.map((i) => ({
+        question: t('qa.q' + i),
+        answer: t('qa.a' + i),
+        sign: this.state.open === i ? '−' : '+',
+        disp: this.state.open === i ? 'block' : 'none',
+        qColor: this.state.open === i ? 'var(--blue)' : 'var(--text)',
+        toggle: () => this.setState((s) => ({ open: s.open === i ? null : i }))
+      }))
+    }));
+    return {
+      kicker: t('nav.qa') ? '07 — ' + t('nav.qa') : '',
+      title: t('qa.title'),
+      intro: t('qa.intro'),
+      groups
+    };
+  }
+}
+</script>
+</body>
+</html>

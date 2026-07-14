@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Field — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+    @keyframes nesuGapPulse { 0%, 100% { stroke-opacity: 0.5; } 50% { stroke-opacity: 1; } }
+    @keyframes nesuFlow { to { stroke-dashoffset: -32; } }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--bg)">
+  <dc-import name="Header" active="fields" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="Field Detail" style="flex: 1">
+    <section style="max-width: 1080px; margin: 0 auto; padding: 72px 32px 104px">
+      <a href="fields.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--blue); text-decoration: none">← {{ backLabel }}</a>
+      <div style="margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px">
+        <div style="flex: 1 1 280px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kicker }} — /fields/{{ slug }}</span>
+          <h1 data-reveal style="margin: 12px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ name }}</h1>
+        </div>
+        <svg viewBox="0 0 24 24" style="width: 64px; height: 64px; flex: none; color: var(--blue)" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="{{ icon }}"></path>
+        </svg>
+      </div>
+
+      <sc-if value="{{ isElec }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top: 40px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden">
+          <div style="padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #00A3A3">{{ activityLabel }}</span>
+            <span style="font-size: 15px; color: var(--text-2)">{{ elecInstr }}</span>
+          </div>
+          <svg viewBox="0 0 560 300" style="width: 100%; display: block; background: #0E2344">
+            <g stroke="#94A3B8" stroke-width="3" stroke-linecap="round" fill="none">
+              <path d="M80 138 V60 H140"></path>
+              <path d="M210 60 H240"></path>
+              <path d="M310 60 H360"></path>
+              <path d="M430 60 H480 V128"></path>
+              <path d="M480 172 V240 H80 V158"></path>
+            </g>
+            <line x1="140" y1="60" x2="210" y2="60" stroke="{{ w1Stroke }}" stroke-width="3" stroke-dasharray="{{ w1Dash }}" stroke-linecap="round" style="animation: {{ w1Anim }}"></line>
+            <line x1="360" y1="60" x2="430" y2="60" stroke="{{ w2Stroke }}" stroke-width="3" stroke-dasharray="{{ w2Dash }}" stroke-linecap="round" style="animation: {{ w2Anim }}"></line>
+            <rect onClick="{{ placeW1 }}" x="135" y="38" width="80" height="44" fill="rgba(0,0,0,0)" style="cursor: pointer"></rect>
+            <rect onClick="{{ placeW2 }}" x="355" y="38" width="80" height="44" fill="rgba(0,0,0,0)" style="cursor: pointer"></rect>
+            <line x1="62" y1="138" x2="98" y2="138" stroke="#C9D2DD" stroke-width="3" stroke-linecap="round"></line>
+            <line x1="71" y1="158" x2="89" y2="158" stroke="#C9D2DD" stroke-width="6" stroke-linecap="round"></line>
+            <text x="106" y="142" fill="#7A8CA6" font-family="IBM Plex Mono, monospace" font-size="12">+</text>
+            <circle cx="240" cy="60" r="4" fill="#C9D2DD"></circle>
+            <circle cx="310" cy="60" r="4" fill="#C9D2DD"></circle>
+            <g style="transform: rotate({{ leverDeg }}deg); transform-origin: 240px 60px; transition: transform 0.25s ease">
+              <line x1="240" y1="60" x2="308" y2="60" stroke="#C9D2DD" stroke-width="4" stroke-linecap="round"></line>
+            </g>
+            <circle onClick="{{ toggleSwitch }}" cx="275" cy="48" r="30" fill="rgba(0,0,0,0)" style="cursor: pointer"></circle>
+            <circle cx="480" cy="150" r="36" fill="#D4AF37" opacity="{{ glowOpacity }}"></circle>
+            <circle cx="480" cy="150" r="22" fill="{{ bulbFill }}" stroke="#C9D2DD" stroke-width="3"></circle>
+            <path d="M470 140 L490 160 M490 140 L470 160" stroke="{{ filamentStroke }}" stroke-width="2.5"></path>
+            <g stroke="#D4AF37" stroke-width="2.5" stroke-linecap="round" opacity="{{ rayOpacity }}">
+              <line x1="480" y1="112" x2="480" y2="100"></line>
+              <line x1="480" y1="188" x2="480" y2="200"></line>
+              <line x1="442" y1="150" x2="430" y2="150"></line>
+              <line x1="518" y1="150" x2="530" y2="150"></line>
+              <line x1="453" y1="123" x2="444" y2="114"></line>
+              <line x1="507" y1="123" x2="516" y2="114"></line>
+              <line x1="453" y1="177" x2="444" y2="186"></line>
+              <line x1="507" y1="177" x2="516" y2="186"></line>
+            </g>
+            <path d="M80 138 V60 H480 V128 M480 172 V240 H80 V158" fill="none" stroke="#00A3A3" stroke-width="2" stroke-dasharray="6 10" opacity="{{ flowOpacity }}" style="animation: nesuFlow 0.9s linear infinite"></path>
+            <text x="280" y="282" text-anchor="middle" fill="{{ statusColor }}" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="1">{{ elecStatus }}</text>
+          </svg>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isSw }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top: 40px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden">
+          <div style="padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #00A3A3">{{ activityLabel }}</span>
+            <span style="font-size: 15px; color: var(--text-2)">{{ swInstr }}</span>
+          </div>
+          <pre style="margin: 0; background: #0E2344; color: #C7D0DD; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.7; padding: 24px 28px; overflow-x: auto"><span style="color: #7A8CA6">function</span> <span style="color: #FFFFFF">averageLoad</span>(loads) {
+  <span style="color: #7A8CA6">let</span> total = <span style="color: #D4AF37">0</span>;
+  <span style="color: #7A8CA6">for</span> (<span style="color: #7A8CA6">let</span> i = <span style="color: #D4AF37">0</span>; i <span style="color: {{ cmpColor }}; background: {{ cmpBg }}; padding: 1px 4px; border-radius: 2px">{{ cmpToken }}</span> loads.length; i++) {
+    total += loads[i];
+  }
+  <span style="color: #7A8CA6">return</span> total / loads.length;
+}</pre>
+          <div style="padding: 14px 28px; background: #0A1830; font-family: 'IBM Plex Mono', monospace; font-size: 13px; display: flex; gap: 12px">
+            <span style="color: #7A8CA6">averageLoad([120, 90, 150])</span>
+            <span style="color: #7A8CA6">→</span>
+            <span style="color: {{ outColor }}; font-weight: 600">{{ outValue }}</span>
+          </div>
+          <div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 10px">
+            <sc-for list="{{ swOptions }}" as="opt" hint-placeholder-count="3">
+              <button onClick="{{ opt.pick }}" style="text-align: left; background: var(--panel); border: 1px solid {{ opt.border }}; border-radius: 3px; padding: 12px 16px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text)" style-hover="border-color: var(--blue)">{{ opt.label }}</button>
+            </sc-for>
+            <span style="font-size: 14px; font-weight: 500; color: {{ swMsgColor }}; min-height: 20px">{{ swMsg }}</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top: 40px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden">
+          <div style="padding: 18px 24px; border-bottom: 1px solid var(--border)">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #00A3A3">{{ activityLabel }}</span>
+          </div>
+          <div style="padding: 26px clamp(20px, 4vw, 28px); display: flex; flex-direction: column; gap: 18px">
+            <p style="margin: 0; font-size: 17px; font-weight: 500; line-height: 1.55; color: var(--text); max-width: 640px; text-wrap: pretty">{{ quizPrompt }}</p>
+            <div style="display: flex; flex-direction: column; gap: 10px; max-width: 520px">
+              <sc-for list="{{ quizOptions }}" as="opt" hint-placeholder-count="3">
+                <button onClick="{{ opt.pick }}" style="text-align: left; background: var(--panel); border: 1px solid {{ opt.border }}; border-radius: 3px; padding: 13px 16px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; color: var(--text)" style-hover="border-color: var(--blue)">{{ opt.label }}</button>
+              </sc-for>
+            </div>
+            <span style="font-size: 14px; font-weight: 600; color: {{ quizMsgColor }}; min-height: 20px">{{ quizMsg }}</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showDemo }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top: 24px; background: var(--teal-bg); border: 1px solid var(--teal-border); border-radius: 4px; padding: 28px clamp(20px, 4vw, 32px)">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #00A3A3">{{ demoTitle }}</span>
+          <p style="margin: 12px 0 0; font-size: 16px; line-height: 1.65; color: var(--text); text-wrap: pretty">{{ demoText }}</p>
+        </div>
+      </sc-if>
+
+      <div style="margin-top: 24px; border: 1px solid var(--border); border-radius: 4px; padding: 28px clamp(20px, 4vw, 32px)">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-2)">{{ aboutTitle }}</span>
+        <p style="margin: 12px 0 0; font-size: 16px; line-height: 1.65; color: var(--text-2); text-wrap: pretty">{{ blurb }}</p>
+      </div>
+    </section>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en', w1: false, w2: false, sw: false, solved: false, swPick: null, swSolved: false, qPick: null, qSolved: false };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    const d = await import(new URL('site-data.js', document.baseURI).href);
+    this.m = m;
+    this.data = d;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+    if (this._timer) clearTimeout(this._timer);
+  }
+
+  getSlug() {
+    try {
+      const q = new URLSearchParams(window.location.search).get('slug');
+      if (q) return q;
+    } catch (e) {}
+    return 'civil';
+  }
+
+  checkLit(next) {
+    const s = Object.assign({}, this.state, next);
+    if (s.w1 && s.w2 && s.sw && !s.solved) {
+      this._timer = setTimeout(() => this.setState({ solved: true }), 900);
+    }
+  }
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const slug = this.getSlug();
+    const list = this.data ? this.data.FIELDS : [];
+    const f = list.find((x) => x.slug === slug) || list[0] || { slug: slug, icon: '', blurb: '', demo: '' };
+    const isElec = f.slug === 'electrical';
+    const isSw = f.slug === 'software';
+    const quiz = (!isElec && !isSw && this.data && this.data.ACTIVITIES) ? this.data.ACTIVITIES[f.slug] : null;
+    const { w1, w2, sw, solved, swPick, swSolved, qPick, qSolved } = this.state;
+    const lit = w1 && w2 && sw;
+    const gapAnim = 'nesuGapPulse 1.5s ease-in-out infinite';
+    const swOpts = [
+      { id: 'b', label: 'let total = 0   →   let total = 1' },
+      { id: 'a', label: 'i <= loads.length   →   i < loads.length' },
+      { id: 'c', label: 'total / loads.length   →   total * loads.length' }
+    ];
+    const swOptions = swOpts.map((o) => ({
+      label: o.label,
+      border: swSolved && o.id === 'a' ? '#00A3A3' : (swPick === o.id && o.id !== 'a' ? '#B4232A' : 'var(--border-2)'),
+      pick: () => {
+        if (this.state.swSolved) return;
+        this.setState({ swPick: o.id, swSolved: o.id === 'a' });
+      }
+    }));
+    const quizOptions = (quiz ? quiz.options : []).map((o, i) => ({
+      label: o.label,
+      bg: 'var(--panel)',
+      border: qSolved && o.ok ? '#00A3A3' : (qPick === i && !o.ok ? '#B4232A' : 'var(--border-2)'),
+      pick: () => {
+        if (this.state.qSolved) return;
+        this.setState({ qPick: i, qSolved: !!o.ok });
+      }
+    }));
+    const swWrong = swPick && !swSolved;
+    const qWrong = qPick !== null && !qSolved;
+    const demoText = (isElec || isSw) ? (f.demo || '') : (quiz ? quiz.demo : '');
+    const showDemo = (isElec && solved) || (isSw && swSolved) || (!!quiz && qSolved);
+    return {
+      backLabel: t('fields.title'),
+      kicker: t('fieldDetail.title'),
+      slug: f.slug,
+      name: t('fields.f.' + f.slug),
+      icon: f.icon,
+      activityLabel: t('fieldDetail.activityLabel'),
+      isElec, isSw,
+      isQuiz: !!quiz,
+      // electrical
+      elecInstr: t('activity.elec.instr'),
+      w1Stroke: w1 ? '#FFFFFF' : '#00A3A3',
+      w2Stroke: w2 ? '#FFFFFF' : '#00A3A3',
+      w1Dash: w1 ? 'none' : '7 7',
+      w2Dash: w2 ? 'none' : '7 7',
+      w1Anim: w1 ? 'none' : gapAnim,
+      w2Anim: w2 ? 'none' : gapAnim,
+      placeW1: () => { if (!this.state.w1) { this.setState({ w1: true }); this.checkLit({ w1: true }); } },
+      placeW2: () => { if (!this.state.w2) { this.setState({ w2: true }); this.checkLit({ w2: true }); } },
+      toggleSwitch: () => { const v = !this.state.sw; this.setState({ sw: v }); this.checkLit({ sw: v }); },
+      leverDeg: sw ? 0 : -30,
+      bulbFill: lit ? '#D4AF37' : '#0B1626',
+      filamentStroke: lit ? '#0E2344' : '#4B5563',
+      glowOpacity: lit ? 0.3 : 0,
+      rayOpacity: lit ? 1 : 0,
+      flowOpacity: lit ? 0.9 : 0,
+      elecStatus: lit ? t('activity.elec.solved') : t('activity.elec.instr'),
+      statusColor: lit ? '#D4AF37' : '#7A8CA6',
+      // software
+      swInstr: t('activity.sw.instr'),
+      cmpToken: swSolved ? '<' : '<=',
+      cmpColor: swSolved ? '#0E2344' : '#FFFFFF',
+      cmpBg: swSolved ? '#00A3A3' : 'rgba(180, 35, 42, 0.55)',
+      outValue: swSolved ? '120' : 'NaN',
+      outColor: swSolved ? '#00A3A3' : '#E06C75',
+      swOptions,
+      swMsg: swSolved ? t('activity.sw.correct') : (swWrong ? t('activity.sw.wrong') : ''),
+      swMsgColor: swSolved ? '#00A3A3' : '#B4232A',
+      // quiz
+      quizPrompt: quiz ? quiz.prompt : '',
+      quizOptions,
+      quizMsg: qSolved ? t('activity.correct') : (qWrong ? t('activity.wrong') : ''),
+      quizMsgColor: qSolved ? '#00A3A3' : '#B4232A',
+      // reveal
+      showDemo,
+      demoTitle: t('fieldDetail.demoTitle'),
+      demoText,
+      aboutTitle: t('fieldDetail.aboutTitle'),
+      blurb: f.blurb || ''
+    };
+  }
+}
+</script>
+</body>
+</html>

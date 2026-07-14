@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Site content — NESU Admin</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #F3F5F7; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: #0057B8; }
+    a:hover { color: #0E2344; }
+  </style>
+</helmet>
+<div data-screen-label="Admin Content" style="min-height: 100vh; display: flex; background: #F3F5F7">
+  <aside style="width: 210px; flex: none; background: #0E2344; display: flex; flex-direction: column; padding: 24px 0">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: #FFFFFF; padding: 0 22px">NESU<span style="color: #00A3A3">/ADMIN</span></span>
+    <nav style="display: flex; flex-direction: column; margin-top: 28px">
+      <a href="admin-events.dc.html" style="font-size: 14px; color: #C7D0DD; text-decoration: none; padding: 11px 22px; border-left: 3px solid transparent" style-hover="color: #FFFFFF">Events</a>
+      <a href="admin-content.dc.html" style="font-size: 14px; font-weight: 600; color: #FFFFFF; text-decoration: none; padding: 11px 22px; background: rgba(0, 87, 184, 0.35); border-left: 3px solid #00A3A3">Site content</a>
+    </nav>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 2px">
+      <a href="index.dc.html" style="font-size: 13px; color: #7A8CA6; text-decoration: none; padding: 8px 22px" style-hover="color: #FFFFFF">← View site</a>
+      <button onClick="{{ logout }}" style="background: none; border: none; cursor: pointer; text-align: left; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #7A8CA6; padding: 8px 22px" style-hover="color: #FFFFFF">Log out</button>
+    </div>
+  </aside>
+  <main style="flex: 1; padding: 32px 36px; min-width: 0">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+      <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #0E2344">Site content</h1>
+      <div style="display: flex; align-items: center; gap: 14px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #00A3A3">{{ savedMsg }}</span>
+        <button onClick="{{ saveAll }}" style="background: #0057B8; color: #FFFFFF; border: none; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; font-weight: 600; padding: 10px 20px" style-hover="background: #0E2344">Save changes</button>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 24px">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Logo assets</span>
+      <p style="margin: 8px 0 0; font-size: 13px; color: #4B5563">Replace the marks used across the site. Empty slots fall back to the built-in SVG lockup.</p>
+      <div style="display: flex; gap: 20px; margin-top: 18px; flex-wrap: wrap">
+        <sc-for list="{{ logoSlots }}" as="slot" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 10px; border: 1px solid #E2E6EC; border-radius: 4px; padding: 16px; width: 200px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: #0E2344">{{ slot.label }}</span>
+            <div style="height: 72px; display: flex; align-items: center; justify-content: center; background: {{ slot.previewBg }}; border-radius: 3px">
+              <sc-if value="{{ slot.hasImg }}" hint-placeholder-val="{{ false }}">
+                <div style="width: 90%; height: 60px; background-image: {{ slot.imgBg }}; background-size: contain; background-repeat: no-repeat; background-position: center"></div>
+              </sc-if>
+              <sc-if value="{{ slot.noImg }}" hint-placeholder-val="{{ true }}">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: #7A8CA6">DEFAULT SVG</span>
+              </sc-if>
+            </div>
+            <input type="file" accept="image/*" onChange="{{ slot.upload }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4B5563; width: 100%">
+            <sc-if value="{{ slot.hasImg }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ slot.reset }}" style="background: none; border: 1px solid #C9D2DD; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12px; font-weight: 600; color: #B4232A; padding: 6px" style-hover="border-color: #B4232A">Reset to default</button>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 24px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Partners</span>
+        <button onClick="{{ addPartner }}" style="background: none; border: 1px solid #C9D2DD; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12.5px; font-weight: 600; color: #0057B8; padding: 7px 14px" style-hover="border-color: #0057B8">+ Add partner</button>
+      </div>
+      <p style="margin: 8px 0 0; font-size: 13px; color: #4B5563">Shown in the homepage carousel and on the About page. Logo optional — the monogram is used when empty.</p>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px">
+        <sc-for list="{{ partnerRows }}" as="pr" hint-placeholder-count="8">
+          <div style="display: flex; align-items: center; gap: 14px; border: 1px solid #EEF1F4; border-radius: 3px; padding: 10px 14px; flex-wrap: wrap">
+            <sc-if value="{{ pr.hasImg }}" hint-placeholder-val="{{ false }}">
+              <div style="height: 34px; width: 60px; flex: none; background-image: {{ pr.imgBg }}; background-size: contain; background-repeat: no-repeat; background-position: center"></div>
+            </sc-if>
+            <sc-if value="{{ pr.noImg }}" hint-placeholder-val="{{ true }}">
+              <span style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: #0E2344; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; border-radius: 2px; flex: none">{{ pr.mark }}</span>
+            </sc-if>
+            <input value="{{ pr.name }}" onChange="{{ pr.onName }}" placeholder="Name" style="flex: 2 1 160px; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13.5px; color: #0E2344; padding: 8px 11px; border: 1px solid #C9D2DD; border-radius: 3px; outline: none" style-focus="border-color: #0057B8">
+            <input value="{{ pr.mark }}" onChange="{{ pr.onMark }}" placeholder="Mark" style="flex: none; width: 56px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #0E2344; padding: 8px 11px; border: 1px solid #C9D2DD; border-radius: 3px; outline: none; text-transform: uppercase" style-focus="border-color: #0057B8">
+            <input type="file" accept="image/*" onChange="{{ pr.upload }}" style="flex: 1 1 170px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4B5563">
+            <sc-if value="{{ pr.hasImg }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ pr.clearImg }}" style="background: none; border: 1px solid #C9D2DD; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12px; color: #4B5563; padding: 6px 10px; flex: none" style-hover="border-color: #4B5563">Clear logo</button>
+            </sc-if>
+            <button onClick="{{ pr.remove }}" style="background: none; border: 1px solid #C9D2DD; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12px; font-weight: 600; color: #B4232A; padding: 6px 10px; flex: none" style-hover="border-color: #B4232A">Remove</button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
+      <div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 24px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #00A3A3">{{ g.label }}</span>
+        <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 16px">
+          <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #EEF1F4; padding-top: 16px">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #4B5563">{{ f.key }}</span>
+              <sc-for list="{{ f.langs }}" as="lf" hint-placeholder-count="3">
+                <label style="display: flex; align-items: flex-start; gap: 12px">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: #00A3A3; width: 24px; flex: none; padding-top: 9px">{{ lf.code }}</span>
+                  <textarea value="{{ lf.value }}" onChange="{{ lf.onChange }}" rows="2" style="flex: 1; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13.5px; color: #0E2344; padding: 8px 11px; border: 1px solid #C9D2DD; border-radius: 3px; outline: none; resize: vertical" style-focus="border-color: #0057B8"></textarea>
+                </label>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { texts: {}, logos: {}, partners: [], savedMsg: '', ready: false };
+
+  GROUP_ORDER = ['brand', 'nav', 'cta', 'home', 'about', 'events', 'competitions', 'news', 'fields', 'fieldDetail', 'activity', 'gallery', 'qa', 'contact', 'footer', 'intro', 'blackout', 'assistant', 'common'];
+  GROUP_LABELS = { brand: 'Brand', nav: 'Navigation', cta: 'Calls to action', home: 'Home', about: 'About', events: 'Events', competitions: 'Competitions', news: 'News', fields: 'Fields index', fieldDetail: 'Field detail', activity: 'Field activities', gallery: 'Gallery', qa: 'Q&A', contact: 'Contact', footer: 'Footer', intro: 'Intro experience', blackout: 'Blackout interstitial', assistant: 'AI assistant', common: 'Shared labels' };
+
+  buildGroups() {
+    // every i18n dictionary key on the site, grouped by prefix
+    const keys = this.m ? this.m.allKeys() : [];
+    const byPrefix = {};
+    keys.forEach((k) => {
+      const p = k.split('.')[0];
+      (byPrefix[p] = byPrefix[p] || []).push(k);
+    });
+    const order = this.GROUP_ORDER.filter((p) => byPrefix[p]).concat(Object.keys(byPrefix).filter((p) => this.GROUP_ORDER.indexOf(p) < 0));
+    this.GROUPS = order.map((p) => ({ label: this.GROUP_LABELS[p] || p, keys: byPrefix[p] }));
+  }
+
+  async componentDidMount() {
+    this.cms = await import(new URL('cms-store.js', document.baseURI).href);
+    if (!this.cms.isLoggedIn()) { window.location.replace('admin.dc.html'); return; }
+    this.m = await import(new URL('i18n.js', document.baseURI).href);
+    await this.m.load();
+    this.buildGroups();
+    const overrides = this.cms.getContent();
+    const texts = {};
+    this.GROUPS.forEach((g) => g.keys.forEach((k) => {
+      texts[k] = {};
+      ['uz', 'en', 'ru'].forEach((l) => {
+        texts[k][l] = (overrides[k] && overrides[k][l]) || this.m.t(l, k) || '';
+      });
+    }));
+    this.setState({ texts, logos: this.cms.getLogos(), partners: this.cms.getPartners(), ready: true });
+  }
+
+  readFileTo(slot) {
+    return (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        this.cms.setLogo(slot, r.result);
+        this.setState({ logos: this.cms.getLogos() });
+      };
+      r.readAsDataURL(f);
+      e.target.value = '';
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const slots = [
+      { id: 'wordmark', label: 'Wordmark (header)', bg: '#F3F5F7' },
+      { id: 'seal', label: 'Seal (footer)', bg: '#0E2344' },
+      { id: 'favicon', label: 'Favicon', bg: '#F3F5F7' }
+    ];
+    const logoSlots = slots.map((sl) => ({
+      label: sl.label,
+      previewBg: sl.bg,
+      imgBg: s.logos[sl.id] ? 'url("' + s.logos[sl.id] + '")' : 'none',
+      hasImg: !!s.logos[sl.id],
+      noImg: !s.logos[sl.id],
+      upload: this.readFileTo(sl.id),
+      reset: () => { this.cms.setLogo(sl.id, null); this.setState({ logos: this.cms.getLogos() }); }
+    }));
+    const setP = (i, patch) => this.setState((st) => {
+      const partners = st.partners.slice();
+      partners[i] = Object.assign({}, partners[i], patch);
+      return { partners, savedMsg: '' };
+    });
+    const partnerRows = (s.partners || []).map((p, i) => ({
+      name: p.name || '',
+      mark: p.mark || '',
+      imgBg: p.img ? 'url("' + p.img + '")' : 'none',
+      hasImg: !!p.img,
+      noImg: !p.img,
+      onName: (e) => setP(i, { name: e.target.value }),
+      onMark: (e) => setP(i, { mark: e.target.value.toUpperCase().slice(0, 3) }),
+      upload: (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = () => setP(i, { img: r.result });
+        r.readAsDataURL(f);
+        e.target.value = '';
+      },
+      clearImg: () => setP(i, { img: '' }),
+      remove: () => this.setState((st) => ({ partners: st.partners.filter((_, j) => j !== i), savedMsg: '' }))
+    }));
+    const groups = (this.GROUPS || []).map((g) => ({
+      label: g.label,
+      fields: g.keys.map((k) => ({
+        key: k,
+        langs: ['uz', 'en', 'ru'].map((l) => ({
+          code: l.toUpperCase(),
+          value: (s.texts[k] && s.texts[k][l]) || '',
+          onChange: (e) => this.setState((st) => {
+            const texts = Object.assign({}, st.texts);
+            texts[k] = Object.assign({}, texts[k], { [l]: e.target.value });
+            return { texts, savedMsg: '' };
+          })
+        }))
+      }))
+    }));
+    return {
+      logoSlots,
+      groups,
+      savedMsg: s.savedMsg,
+      partnerRows,
+      addPartner: () => this.setState((st) => ({
+        partners: st.partners.concat([{ id: 'pt-' + Date.now(), name: '', mark: '', img: '' }]),
+        savedMsg: ''
+      })),
+      saveAll: () => {
+        if (!this.cms) return;
+        Object.keys(s.texts).forEach((k) => this.cms.setContent(k, s.texts[k]));
+        this.cms.savePartners((this.state.partners || []).filter((p) => (p.name || '').trim()));
+        this.setState({ savedMsg: 'Saved ✓' });
+      },
+      logout: () => { this.cms.logout(); window.location.href = 'admin.dc.html'; }
+    };
+  }
+}
+</script>
+</body>
+</html>

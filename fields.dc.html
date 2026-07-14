@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Engineering Fields — NESU</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: var(--blue); }
+    a:hover { color: var(--text); }
+  </style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
+  <dc-import name="Header" active="fields" hint-size="100%,80px"></dc-import>
+  <main data-screen-label="Fields" style="flex: 1">
+    <section style="max-width: 1280px; margin: 0 auto; padding: 80px 32px 0">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3" data-reveal>{{ kicker }}</span>
+      <h1 data-reveal style="margin: 16px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
+      <p data-reveal style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
+    </section>
+    <section style="max-width: 1280px; margin: 48px auto 0; padding: 0 32px 104px; display: flex; flex-direction: column">
+      <sc-for list="{{ fields }}" as="f" hint-placeholder-count="10">
+        <a href="{{ f.href }}" style="display: flex; align-items: center; gap: 28px; padding: 22px 8px; border-top: 1px solid var(--border); text-decoration: none" style-hover="background: var(--bg-subtle)">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: #00A3A3; width: 32px; flex: none">{{ f.num }}</span>
+          <span style="flex: 1; font-size: 22px; font-weight: 600; color: var(--text)">{{ f.name }}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-2)">/{{ f.slug }}</span>
+          <svg viewBox="0 0 24 24" style="width: 34px; height: 34px; flex: none; color: var(--blue)" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="{{ f.icon }}"></path>
+          </svg>
+        </a>
+      </sc-for>
+      <div style="border-top: 1px solid var(--border)"></div>
+    </section>
+  </main>
+  <dc-import name="Footer" hint-size="100%,480px"></dc-import>
+  <dc-import name="Assistant" hint-size="72px,72px"></dc-import>
+  <dc-import name="TestNote" hint-size="72px,32px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'en' };
+
+  async componentDidMount() {
+    const m = await import(new URL('i18n.js', document.baseURI).href);
+    const d = await import(new URL('site-data.js', document.baseURI).href);
+    this.m = m;
+    this.data = d;
+    this.setState({ lang: m.getLang() });
+    this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
+    await m.load();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    if (this._unsub) this._unsub();
+  }
+
+  renderVals() {
+    const m = this.m;
+    const t = (k) => (m ? m.t(this.state.lang, k) : '');
+    const fields = (this.data ? this.data.FIELDS : []).map((f, i) => ({
+      num: (i + 1 < 10 ? '0' : '') + (i + 1),
+      slug: f.slug,
+      name: t('fields.f.' + f.slug),
+      icon: f.icon,
+      href: 'field-detail.dc.html?slug=' + f.slug
+    }));
+    return {
+      kicker: t('nav.fields') ? '05 — ' + t('nav.fields') : '',
+      title: t('fields.title'),
+      intro: t('fields.intro'),
+      fields
+    };
+  }
+}
+</script>
+</body>
+</html>

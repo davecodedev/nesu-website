@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Events manager — NESU Admin</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #F3F5F7; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: #0057B8; }
+    a:hover { color: #0E2344; }
+  </style>
+</helmet>
+<div data-screen-label="Admin Events" style="min-height: 100vh; display: flex; background: #F3F5F7">
+  <aside style="width: 210px; flex: none; background: #0E2344; display: flex; flex-direction: column; padding: 24px 0">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: #FFFFFF; padding: 0 22px">NESU<span style="color: #00A3A3">/ADMIN</span></span>
+    <nav style="display: flex; flex-direction: column; margin-top: 28px">
+      <a href="admin-events.dc.html" style="font-size: 14px; font-weight: 600; color: #FFFFFF; text-decoration: none; padding: 11px 22px; background: rgba(0, 87, 184, 0.35); border-left: 3px solid #00A3A3">Events</a>
+      <a href="admin-content.dc.html" style="font-size: 14px; color: #C7D0DD; text-decoration: none; padding: 11px 22px; border-left: 3px solid transparent" style-hover="color: #FFFFFF">Site content</a>
+    </nav>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 2px">
+      <a href="index.dc.html" style="font-size: 13px; color: #7A8CA6; text-decoration: none; padding: 8px 22px" style-hover="color: #FFFFFF">← View site</a>
+      <button onClick="{{ logout }}" style="background: none; border: none; cursor: pointer; text-align: left; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #7A8CA6; padding: 8px 22px" style-hover="color: #FFFFFF">Log out</button>
+    </div>
+  </aside>
+  <main style="flex: 1; padding: 32px 36px; min-width: 0">
+
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #0E2344">Events</h1>
+        <button onClick="{{ newEvent }}" style="background: #0057B8; color: #FFFFFF; border: none; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; font-weight: 600; padding: 10px 18px; border-radius: 3px" style-hover="background: #0E2344">+ New event</button>
+      </div>
+      <div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; overflow: hidden">
+        <sc-for list="{{ rows }}" as="row" hint-placeholder-count="6">
+          <div style="display: flex; align-items: center; gap: 18px; padding: 12px 18px; border-bottom: 1px solid #EEF1F4">
+            <sc-if value="{{ row.hasCover }}" hint-placeholder-val="{{ false }}">
+              <div style="width: 56px; height: 40px; border-radius: 2px; flex: none; background-image: {{ row.coverBg }}; background-size: cover; background-position: center"></div>
+            </sc-if>
+            <sc-if value="{{ row.noCover }}" hint-placeholder-val="{{ true }}">
+              <div style="width: 56px; height: 40px; border-radius: 2px; flex: none; background-color: #10264C; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.07) 0, rgba(255,255,255,0.07) 2px, transparent 2px, transparent 8px)"></div>
+            </sc-if>
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 14.5px; font-weight: 600; color: #0E2344; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ row.title }}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #4B5563">{{ row.date }}</span>
+            </div>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: {{ row.statusColor }}; border: 1px solid {{ row.statusBorder }}; border-radius: 3px; padding: 3px 8px; flex: none">{{ row.status }}</span>
+            <button onClick="{{ row.edit }}" style="background: none; border: 1px solid #C9D2DD; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12.5px; font-weight: 600; color: #0057B8; padding: 6px 12px; flex: none" style-hover="border-color: #0057B8">Edit</button>
+            <button onClick="{{ row.del }}" style="background: none; border: 1px solid #C9D2DD; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12.5px; font-weight: 600; color: #B4232A; padding: 6px 12px; flex: none" style-hover="border-color: #B4232A">Delete</button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; align-items: center; gap: 16px">
+        <button onClick="{{ backToList }}" style="background: none; border: none; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #0057B8; padding: 0">← Events</button>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #0E2344">{{ formTitle }}</h1>
+      </div>
+      <div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 28px; display: flex; flex-direction: column; gap: 22px; max-width: 760px">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Title</span>
+          <sc-for list="{{ titleFields }}" as="tf" hint-placeholder-count="3">
+            <label style="display: flex; align-items: center; gap: 12px">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: #00A3A3; width: 24px; flex: none">{{ tf.code }}</span>
+              <input value="{{ tf.value }}" onChange="{{ tf.onChange }}" style="flex: 1; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14.5px; color: #0E2344; padding: 9px 12px; border: 1px solid #C9D2DD; border-radius: 3px; outline: none" style-focus="border-color: #0057B8">
+            </label>
+          </sc-for>
+        </div>
+        <label style="display: flex; flex-direction: column; gap: 8px; max-width: 260px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Date</span>
+          <input type="date" value="{{ date }}" onChange="{{ onDate }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #0E2344; padding: 9px 12px; border: 1px solid #C9D2DD; border-radius: 3px; outline: none" style-focus="border-color: #0057B8">
+        </label>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Description</span>
+          <sc-for list="{{ descFields }}" as="df" hint-placeholder-count="3">
+            <label style="display: flex; align-items: flex-start; gap: 12px">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: #00A3A3; width: 24px; flex: none; padding-top: 10px">{{ df.code }}</span>
+              <textarea value="{{ df.value }}" onChange="{{ df.onChange }}" rows="3" style="flex: 1; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; color: #0E2344; padding: 9px 12px; border: 1px solid #C9D2DD; border-radius: 3px; outline: none; resize: vertical" style-focus="border-color: #0057B8"></textarea>
+            </label>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Photos <span style="color: #7A8CA6; text-transform: none; letter-spacing: 0">— first photo is the cover; drag thumbnails to reorder</span></span>
+          <input type="file" accept="image/*" multiple onChange="{{ onFiles }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4B5563">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <sc-for list="{{ thumbs }}" as="th" hint-placeholder-count="0">
+              <div draggable="true" onDragStart="{{ th.dragStart }}" onDragOver="{{ th.dragOver }}" onDrop="{{ th.drop }}" style="position: relative; width: 110px; height: 78px; border: 2px solid {{ th.border }}; border-radius: 3px; overflow: hidden; cursor: grab; background: #10264C">
+                <div style="width: 100%; height: 100%; background-image: {{ th.bg }}; background-size: cover; background-position: center; pointer-events: none"></div>
+                <sc-if value="{{ th.isCover }}" hint-placeholder-val="{{ false }}">
+                  <span style="position: absolute; left: 4px; bottom: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; background: #00A3A3; color: #0E2344; padding: 2px 6px; border-radius: 2px">COVER</span>
+                </sc-if>
+                <button onClick="{{ th.remove }}" style="position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: rgba(14,35,68,0.85); color: #FFFFFF; border: none; cursor: pointer; font-size: 12px; line-height: 1; display: flex; align-items: center; justify-content: center">×</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <span style="font-size: 13px; color: #B4232A; min-height: 16px">{{ formError }}</span>
+        <div style="display: flex; gap: 12px">
+          <button onClick="{{ saveDraft }}" style="background: none; border: 1px solid #C9D2DD; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; font-weight: 600; color: #4B5563; padding: 11px 20px" style-hover="border-color: #4B5563">Save as draft</button>
+          <button onClick="{{ publish }}" style="background: #0057B8; color: #FFFFFF; border: none; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; font-weight: 600; padding: 11px 22px" style-hover="background: #0E2344">Publish</button>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    view: 'list', events: [], editingId: null,
+    title: { uz: '', en: '', ru: '' }, desc: { uz: '', en: '', ru: '' },
+    date: '', photos: [], formError: '', dragIdx: null
+  };
+
+  async componentDidMount() {
+    this.cms = await import(new URL('cms-store.js', document.baseURI).href);
+    if (!this.cms.isLoggedIn()) { window.location.replace('admin.dc.html'); return; }
+    this.setState({ events: this.cms.getEvents() });
+  }
+
+  refresh() { if (this.cms) this.setState({ events: this.cms.getEvents() }); }
+
+  openForm(ev) {
+    this.setState({
+      view: 'form',
+      editingId: ev ? ev.id : null,
+      title: ev ? Object.assign({ uz: '', en: '', ru: '' }, ev.title) : { uz: '', en: '', ru: '' },
+      desc: ev ? Object.assign({ uz: '', en: '', ru: '' }, ev.desc) : { uz: '', en: '', ru: '' },
+      date: ev ? (ev.date || '') : '',
+      photos: ev ? (ev.photos || []).slice() : [],
+      formError: ''
+    });
+  }
+
+  save(status) {
+    if (!this.cms) return;
+    const s = this.state;
+    if (!s.title.en.trim()) { this.setState({ formError: 'English title is required.' }); return; }
+    if (!s.date) { this.setState({ formError: 'Date is required.' }); return; }
+    const existing = s.editingId ? this.cms.getEvents().find((e) => e.id === s.editingId) : null;
+    const id = s.editingId || 'ev-' + Date.now();
+    const ev = {
+      id,
+      slug: existing ? existing.slug : this.cms.makeSlug(s.title.en),
+      title: s.title, desc: s.desc, date: s.date,
+      loc: existing ? (existing.loc || '') : '',
+      photos: s.photos, status
+    };
+    const ok = this.cms.saveEvent(ev);
+    if (!ok) { this.setState({ formError: 'Storage is full — try smaller images.' }); return; }
+    this.setState({ view: 'list', editingId: null });
+    this.refresh();
+  }
+
+  onFiles = (e) => {
+    const files = Array.from(e.target.files || []);
+    files.forEach((f) => {
+      const r = new FileReader();
+      r.onload = () => this.setState((s) => ({ photos: s.photos.concat([r.result]) }));
+      r.readAsDataURL(f);
+    });
+    e.target.value = '';
+  };
+
+  renderVals() {
+    const s = this.state;
+    const rows = s.events.map((e) => ({
+      title: (e.title && (e.title.en || e.title.uz || e.title.ru)) || '(untitled)',
+      date: e.date || '—',
+      coverBg: (e.photos && e.photos[0]) ? 'url("' + e.photos[0] + '")' : 'none',
+      hasCover: !!(e.photos && e.photos[0]),
+      noCover: !(e.photos && e.photos[0]),
+      status: e.status === 'published' ? 'Published' : 'Draft',
+      statusColor: e.status === 'published' ? '#00A3A3' : '#4B5563',
+      statusBorder: e.status === 'published' ? '#B3E4E4' : '#D6DCE4',
+      edit: () => this.openForm(e),
+      del: () => {
+        if (window.confirm('Delete "' + ((e.title && e.title.en) || e.id) + '"?')) {
+          this.cms.deleteEvent(e.id);
+          this.refresh();
+        }
+      }
+    }));
+    const langField = (obj, field) => ['uz', 'en', 'ru'].map((c) => ({
+      code: c.toUpperCase(),
+      value: obj[c] || '',
+      onChange: (ev) => this.setState((st) => {
+        const next = Object.assign({}, st[field]);
+        next[c] = ev.target.value;
+        return { [field]: next, formError: '' };
+      })
+    }));
+    const thumbs = s.photos.map((src, i) => ({
+      bg: 'url("' + src + '")',
+      isCover: i === 0,
+      border: i === 0 ? '#00A3A3' : '#C9D2DD',
+      dragStart: () => this.setState({ dragIdx: i }),
+      dragOver: (ev) => ev.preventDefault(),
+      drop: (ev) => {
+        ev.preventDefault();
+        const from = this.state.dragIdx;
+        if (from == null || from === i) return;
+        const ph = this.state.photos.slice();
+        const [moved] = ph.splice(from, 1);
+        ph.splice(i, 0, moved);
+        this.setState({ photos: ph, dragIdx: null });
+      },
+      remove: () => this.setState((st) => ({ photos: st.photos.filter((_, j) => j !== i) }))
+    }));
+    return {
+      isList: s.view === 'list',
+      isForm: s.view === 'form',
+      rows,
+      newEvent: () => this.openForm(null),
+      backToList: () => this.setState({ view: 'list' }),
+      formTitle: s.editingId ? 'Edit event' : 'New event',
+      titleFields: langField(s.title, 'title'),
+      descFields: langField(s.desc, 'desc'),
+      date: s.date,
+      onDate: (e) => this.setState({ date: e.target.value, formError: '' }),
+      onFiles: this.onFiles,
+      thumbs,
+      formError: s.formError,
+      saveDraft: () => this.save('draft'),
+      publish: () => this.save('published'),
+      logout: () => { this.cms.logout(); window.location.href = 'admin.dc.html'; }
+    };
+  }
+}
+</script>
+</body>
+</html>
