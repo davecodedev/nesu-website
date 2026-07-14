@@ -79,7 +79,22 @@ const RP_KEY = 'nesu-feedback-reports';
 export function saveReport(r) {
   const list = read(RP_KEY, []);
   list.push(Object.assign({ at: new Date().toISOString() }, r));
-  return write(RP_KEY, list);
+  const ok = write(RP_KEY, list);
+  // Best-effort forward to staff via Telegram; local save above stays the source of truth.
+  try {
+    fetch('/api/telegram-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'bug_report',
+        name: r.name,
+        email: r.email,
+        complaint: r.complaint,
+        page: r.page
+      })
+    }).catch(() => {});
+  } catch (e) {}
+  return ok;
 }
 export function getReports() { return read(RP_KEY, []); }
 

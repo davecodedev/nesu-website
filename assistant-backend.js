@@ -19,6 +19,19 @@ const RULES = [
 ];
 
 export async function sendMessageToAssistant(message) {
+  // Forward every question to staff via Telegram — best-effort, never blocks the reply.
+  try {
+    fetch('/api/telegram-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'assistant_question',
+        question: message,
+        page: typeof window !== 'undefined' ? window.location.pathname : ''
+      })
+    }).catch(() => {});
+  } catch (e) {}
+
   // Simulated network/thinking delay for the typing indicator.
   await new Promise((r) => setTimeout(r, 900 + Math.random() * 700));
   const hit = RULES.find((rule) => rule.re.test(message));
