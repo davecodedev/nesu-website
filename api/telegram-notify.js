@@ -1,6 +1,22 @@
 // Forwards AI assistant questions and bug reports to a staff Telegram chat.
-// Requires TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID env vars (Vercel project settings).
+// Requires only TELEGRAM_BOT_TOKEN (Vercel project settings) — the destination
+// chat is auto-discovered from the bot's own message history via getUpdates,
+// so no chat ID needs to be looked up or configured by hand. This does mean
+// someone must have messaged the bot at least once (Telegram's own anti-spam
+// rule: a bot can't message a chat that has never contacted it).
 // Never exposes the bot token to the browser — this runs server-side only.
+
+async function resolveChatId(token) {
+  const r = await fetch('https://api.telegram.org/bot' + token + '/getUpdates?limit=5');
+  const data = await r.json();
+  if (!data.ok || !data.result || !data.result.length) return null;
+  const last = data.result[data.result.length - 1];
+  const chat = (last.message && last.message.chat)
+    || (last.channel_post && last.channel_post.chat)
+    || (last.my_chat_member && last.my_chat_member.chat);
+  return chat ? chat.id : null;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
@@ -8,9 +24,14 @@ module.exports = async (req, res) => {
   }
 
   const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) {
+  if (!token) {
     res.status(500).json({ error: 'Telegram not configured' });
+    return;
+  }
+
+  const chatId = await resolveChatId(token);
+  if (!chatId) {
+    res.status(500).json({ error: 'No Telegram chat found yet — message the bot once first' });
     return;
   }
 
