@@ -4,24 +4,10 @@ const LANGS = ['uz', 'en', 'ru'];
 let dicts = null;
 let loading = null;
 
-// Site-content overrides edited via the admin CMS (see cms-store.js).
+// Site-content overrides edited via the admin CMS (see cms-store.js) — now
+// served from the shared backend (api/cms-data.js) instead of localStorage,
+// so they're the same for every visitor. Populated inside load() below.
 let overrides = {};
-function readOverrides() {
-  try {
-    overrides = JSON.parse(localStorage.getItem('nesu-cms-content') || '{}');
-    // Migration: a bulk "Save changes" in the admin CMS snapshotted the old
-    // footer saying as an override, which would shadow the new dictionary
-    // value forever. Purge that one stale entry (a deliberate admin edit to
-    // any other wording is left untouched).
-    const gl = overrides['footer.glitchLine'];
-    if (gl && typeof gl.en === 'string' && gl.en.indexOf('This website has problems') === 0) {
-      delete overrides['footer.glitchLine'];
-      localStorage.setItem('nesu-cms-content', JSON.stringify(overrides));
-    }
-  } catch (e) { overrides = {}; }
-}
-readOverrides();
-if (typeof window !== 'undefined') window.addEventListener('nesu-content-changed', readOverrides);
 
 export const NAV = [
   { key: 'home', href: 'index.dc.html' },
@@ -56,11 +42,17 @@ export function onLangChange(fn) {
 
 export function load() {
   if (!loading) {
-    loading = Promise.all(LANGS.map((l) =>
+    const dictFetches = LANGS.map((l) =>
       fetch(new URL('./locales/' + l + '.json', import.meta.url)).then((r) => r.json())
-    )).then((arr) => {
+    );
+    const overridesFetch = fetch('/api/cms-data')
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+    loading = Promise.all(dictFetches.concat([overridesFetch])).then((arr) => {
       dicts = {};
       LANGS.forEach((l, i) => { dicts[l] = arr[i]; });
+      const cms = arr[LANGS.length];
+      overrides = (cms && cms.content) || {};
     });
   }
   return loading;

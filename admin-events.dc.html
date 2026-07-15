@@ -121,12 +121,17 @@ class Component extends DCLogic {
 
   async componentDidMount() {
     this.cms = await import(new URL('cms-store.js', document.baseURI).href);
-    if (!this.cms.isLoggedIn()) { window.location.replace('admin.dc.html'); return; }
+    if (!(await this.cms.isLoggedIn())) { window.location.replace('admin.dc.html'); return; }
     this.imgResize = await import(new URL('img-resize.js', document.baseURI).href);
-    this.setState({ events: this.cms.getEvents() });
+    const events = await this.cms.getEvents();
+    this.setState({ events });
   }
 
-  refresh() { if (this.cms) this.setState({ events: this.cms.getEvents() }); }
+  async refresh() {
+    if (!this.cms) return;
+    const events = await this.cms.getEvents();
+    this.setState({ events });
+  }
 
   openForm(ev) {
     this.setState({
@@ -140,22 +145,43 @@ class Component extends DCLogic {
     });
   }
 
-  save(status) {
+  async save(status) {
     if (!this.cms) return;
     const s = this.state;
     if (!s.title.en.trim()) { this.setState({ formError: 'English title is required.' }); return; }
     if (!s.date) { this.setState({ formError: 'Date is required.' }); return; }
-    const existing = s.editingId ? this.cms.getEvents().find((e) => e.id === s.editingId) : null;
+
+    const allEvents = await this.cms.getEvents();
+    const existing = s.editingId ? allEvents.find((e) => e.id === s.editingId) : null;
     const id = s.editingId || 'ev-' + Date.now();
+
+    // Photos are still local data URLs from the file picker/resize step —
+    // upload each to Blob storage now so the saved event only ever
+    // references real hosted URLs, never a multi-hundred-KB data URL.
+    let photos;
+    try {
+      photos = await Promise.all(s.photos.map(async (p) => {
+        if (typeof p === 'string' && p.indexOf('data:') === 0) {
+          const up = await this.cms.uploadImage(p);
+          if (!up.ok) throw new Error(up.error || 'upload failed');
+          return up.url;
+        }
+        return p;
+      }));
+    } catch (e) {
+      this.setState({ formError: 'One of the photos failed to upload — try again.' });
+      return;
+    }
+
     const ev = {
       id,
       slug: existing ? existing.slug : this.cms.makeSlug(s.title.en),
       title: s.title, desc: s.desc, date: s.date,
       loc: existing ? (existing.loc || '') : '',
-      photos: s.photos, status
+      photos, status
     };
-    const ok = this.cms.saveEvent(ev);
-    if (!ok) { this.setState({ formError: 'Storage is full — try smaller images.' }); return; }
+    const ok = await this.cms.saveEvent(ev);
+    if (!ok) { this.setState({ formError: 'Could not save — try again.' }); return; }
     this.setState({ view: 'list', editingId: null });
     this.refresh();
   }
@@ -194,8 +220,7 @@ class Component extends DCLogic {
       edit: () => this.openForm(e),
       del: () => {
         if (window.confirm('Delete "' + ((e.title && e.title.en) || e.id) + '"?')) {
-          this.cms.deleteEvent(e.id);
-          this.refresh();
+          this.cms.deleteEvent(e.id).then(() => this.refresh());
         }
       }
     }));
@@ -241,7 +266,7 @@ class Component extends DCLogic {
       formError: s.formError,
       saveDraft: () => this.save('draft'),
       publish: () => this.save('published'),
-      logout: () => { this.cms.logout(); window.location.href = 'admin.dc.html'; }
+      logout: () => { this.cms.logout().then(() => { window.location.href = 'admin.dc.html'; }); }
     };
   }
 }

@@ -76,7 +76,7 @@ class Component extends DCLogic {
     this.data = d;
     try {
       const cms = await import(new URL('cms-store.js', document.baseURI).href);
-      this.setState({ cmsPartners: cms.getPartners() });
+      this.setState({ cmsPartners: await cms.getPartners() });
     } catch (e) {}
     this.setState({ lang: m.getLang() });
     this._unsub = m.onLangChange((l) => this.setState({ lang: l }));

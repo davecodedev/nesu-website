@@ -73,7 +73,11 @@ class Component extends DCLogic {
       const p = new URLSearchParams(window.location.search);
       slug = p.get('slug') || p.get('id') || '';
     } catch (e) {}
-    const ev = cms.getEventBySlug(slug) || cms.getPublishedEvents()[0] || null;
+    let ev = await cms.getEventBySlug(slug);
+    if (!ev) {
+      const pub = await cms.getPublishedEvents();
+      ev = pub[0] || null;
+    }
     this.setState({ lang: m.getLang(), ev });
     this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
     this._onKey = (e) => { if (e.key === 'Escape') this.setState({ lightbox: null }); };

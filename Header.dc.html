@@ -302,12 +302,10 @@ class Component extends DCLogic {
     try { theme = localStorage.getItem('nesu-theme') === 'dark' ? 'dark' : 'light'; } catch (e) {}
     document.documentElement.setAttribute('data-nesu-theme', theme);
     this.setState({ theme });
-    this._readLogos = () => {
-      try { this.setState({ logos: JSON.parse(localStorage.getItem('nesu-cms-logos') || '{}') }); }
-      catch (e) { this.setState({ logos: {} }); }
-    };
-    this._readLogos();
-    window.addEventListener('nesu-content-changed', this._readLogos);
+    import(new URL('cms-store.js', document.baseURI).href)
+      .then((cms) => cms.getLogos())
+      .then((logos) => this.setState({ logos }))
+      .catch(() => this.setState({ logos: {} }));
     const m = await import(new URL('i18n.js', document.baseURI).href);
     this.m = m;
     this.setState({ lang: m.getLang() });
@@ -319,7 +317,6 @@ class Component extends DCLogic {
   componentWillUnmount() {
     window.removeEventListener('scroll', this._onScroll);
     if (this._mq) this._mq.removeEventListener('change', this._onMq);
-    if (this._readLogos) window.removeEventListener('nesu-content-changed', this._readLogos);
     if (this._revealScan) clearInterval(this._revealScan);
     if (this._revealIO) this._revealIO.disconnect();
     if (this._cursorRaf) cancelAnimationFrame(this._cursorRaf);

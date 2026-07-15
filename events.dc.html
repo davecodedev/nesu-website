@@ -77,7 +77,8 @@ class Component extends DCLogic {
     const fz = await import(new URL('fuzzy.js', document.baseURI).href);
     this.m = m;
     this.fz = fz;
-    this.setState({ lang: m.getLang(), events: cms.getPublishedEvents() });
+    const events = await cms.getPublishedEvents();
+    this.setState({ lang: m.getLang(), events });
     this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
     await m.load();
     this.forceUpdate();

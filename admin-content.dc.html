@@ -135,11 +135,15 @@ class Component extends DCLogic {
 
   async componentDidMount() {
     this.cms = await import(new URL('cms-store.js', document.baseURI).href);
-    if (!this.cms.isLoggedIn()) { window.location.replace('admin.dc.html'); return; }
+    if (!(await this.cms.isLoggedIn())) { window.location.replace('admin.dc.html'); return; }
     this.m = await import(new URL('i18n.js', document.baseURI).href);
     await this.m.load();
     this.buildGroups();
-    const overrides = this.cms.getContent();
+    const [overrides, logos, partners] = await Promise.all([
+      this.cms.getContent(),
+      this.cms.getLogos(),
+      this.cms.getPartners()
+    ]);
     const texts = {};
     this.GROUPS.forEach((g) => g.keys.forEach((k) => {
       texts[k] = {};
@@ -147,7 +151,7 @@ class Component extends DCLogic {
         texts[k][l] = (overrides[k] && overrides[k][l]) || this.m.t(l, k) || '';
       });
     }));
-    this.setState({ texts, logos: this.cms.getLogos(), partners: this.cms.getPartners(), ready: true });
+    this.setState({ texts, logos, partners, ready: true });
   }
 
   readFileTo(slot) {
@@ -160,12 +164,12 @@ class Component extends DCLogic {
         return;
       }
       const r = new FileReader();
-      r.onload = () => {
-        const ok = this.cms.setLogo(slot, r.result);
-        this.setState({
-          logos: this.cms.getLogos(),
-          logoError: ok ? '' : 'Could not save — local storage is full. Remove another image first.'
-        });
+      r.onload = async () => {
+        const up = await this.cms.uploadImage(r.result);
+        if (!up.ok) { this.setState({ logoError: up.error || 'Upload failed.' }); return; }
+        const ok = await this.cms.setLogo(slot, up.url);
+        const logos = await this.cms.getLogos();
+        this.setState({ logos, logoError: ok ? '' : 'Could not save that logo — try again.' });
       };
       r.onerror = () => this.setState({ logoError: 'Could not read that file.' });
       r.readAsDataURL(f);
@@ -187,7 +191,11 @@ class Component extends DCLogic {
       hasImg: !!s.logos[sl.id],
       noImg: !s.logos[sl.id],
       upload: this.readFileTo(sl.id),
-      reset: () => { this.cms.setLogo(sl.id, null); this.setState({ logos: this.cms.getLogos() }); }
+      reset: () => {
+        this.cms.setLogo(sl.id, null)
+          .then(() => this.cms.getLogos())
+          .then((logos) => this.setState({ logos }));
+      }
     }));
     const setP = (i, patch) => this.setState((st) => {
       const partners = st.partners.slice();
@@ -211,7 +219,12 @@ class Component extends DCLogic {
           return;
         }
         const r = new FileReader();
-        r.onload = () => { setP(i, { img: r.result }); this.setState({ partnersError: '' }); };
+        r.onload = async () => {
+          const up = await this.cms.uploadImage(r.result);
+          if (!up.ok) { this.setState({ partnersError: up.error || 'Upload failed.' }); return; }
+          setP(i, { img: up.url });
+          this.setState({ partnersError: '' });
+        };
         r.onerror = () => this.setState({ partnersError: 'Could not read that file.' });
         r.readAsDataURL(f);
         e.target.value = '';
@@ -246,17 +259,17 @@ class Component extends DCLogic {
         partners: st.partners.concat([{ id: 'pt-' + Date.now(), name: '', mark: '', img: '' }]),
         savedMsg: ''
       })),
-      saveAll: () => {
+      saveAll: async () => {
         if (!this.cms) return;
-        const contentOk = this.cms.setContentBatch(s.texts);
-        const partnersOk = this.cms.savePartners((this.state.partners || []).filter((p) => (p.name || '').trim()));
+        const contentOk = await this.cms.setContentBatch(s.texts);
+        const partnersOk = await this.cms.savePartners((this.state.partners || []).filter((p) => (p.name || '').trim()));
         const allOk = contentOk && partnersOk;
         this.setState({
-          savedMsg: allOk ? 'Saved ✓' : 'Local storage is full — some changes were not saved. Remove a large image and try again.',
+          savedMsg: allOk ? 'Saved ✓' : 'Could not save — check your connection and try again.',
           savedMsgColor: allOk ? '#00A3A3' : '#B4232A'
         });
       },
-      logout: () => { this.cms.logout(); window.location.href = 'admin.dc.html'; }
+      logout: () => { this.cms.logout().then(() => { window.location.href = 'admin.dc.html'; }); }
     };
   }
 }

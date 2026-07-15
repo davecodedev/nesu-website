@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "description": "NESU website — static site + serverless API functions (no client-side build step).",
+  "dependencies": {
+    "@vercel/blob": "latest"
+  }
+}

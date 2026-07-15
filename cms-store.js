@@ -1,122 +1,154 @@
-// NESU CMS data layer — PROTOTYPE PERSISTENCE (localStorage/sessionStorage).
-//
-// PRODUCTION SEAM: keep these function signatures, replace the implementation.
-// Real deployment needs:
-//   - a database for events ({id, slug, title{uz,en,ru}, date, desc{uz,en,ru},
-//     photos[] (ordered, first = cover), status: 'draft'|'published'})
-//     and site content ({key, value{uz,en,ru}} + named logo asset slots)
-//   - real file/object storage for uploaded images (here: data URLs)
-//   - real authentication (here: hardcoded credentials + sessionStorage flag)
-import { EVENTS, PARTNERS } from './site-data.js';
+// NESU CMS data layer — backed by a shared server-side document (Vercel
+// Blob storage, see api/cms-data.js and api/cms-save.js) instead of
+// localStorage, so admin edits are visible to every visitor, not just the
+// browser that made them. Writes require an authenticated admin session
+// (see api/cms-login.js) — a signed cookie, verified server-side.
 
-const EV_KEY = 'nesu-cms-events';
-const CT_KEY = 'nesu-cms-content';
-const LG_KEY = 'nesu-cms-logos';
-const AUTH_KEY = 'nesu-admin-session';
+let cachedData = null;
+let cachedAt = 0;
+const CACHE_MS = 5000; // avoid refetching the whole document on every call within one page
 
-function read(key, fb) {
-  try { const v = JSON.parse(localStorage.getItem(key)); return v == null ? fb : v; }
-  catch (e) { return fb; }
+async function fetchData(force) {
+  if (!force && cachedData && Date.now() - cachedAt < CACHE_MS) return cachedData;
+  try {
+    const res = await fetch('/api/cms-data');
+    cachedData = res.ok ? await res.json() : { content: {}, logos: {}, partners: [], events: [] };
+  } catch (e) {
+    cachedData = { content: {}, logos: {}, partners: [], events: [] };
+  }
+  cachedAt = Date.now();
+  return cachedData;
 }
-function write(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
-  catch (e) { console.warn('CMS storage write failed (quota?)', e); return false; }
-}
-function ping() { window.dispatchEvent(new CustomEvent('nesu-content-changed')); }
+
+function invalidateCache() { cachedData = null; }
 
 // ---- events ----
-function seedEvents() {
-  if (localStorage.getItem(EV_KEY)) return;
-  write(EV_KEY, EVENTS.map((e) => ({
-    id: e.id, slug: e.id,
-    title: { en: e.title, uz: '[UZ] ' + e.title, ru: '[RU] ' + e.title },
-    date: e.date, loc: e.loc || '',
-    desc: { en: e.desc, uz: '[UZ] ' + e.desc, ru: '[RU] ' + e.desc },
-    photos: [], status: 'published'
-  })));
+export async function getEvents() {
+  const data = await fetchData();
+  return data.events || [];
 }
-export function getEvents() { seedEvents(); return read(EV_KEY, []); }
-export function getPublishedEvents() { return getEvents().filter((e) => e.status === 'published'); }
-export function getEventBySlug(slug) { return getEvents().find((e) => e.slug === slug || e.id === slug) || null; }
-export function saveEvent(ev) {
-  const all = getEvents();
-  const i = all.findIndex((x) => x.id === ev.id);
-  if (i >= 0) all[i] = ev; else all.unshift(ev);
-  const ok = write(EV_KEY, all);
-  ping();
-  return ok;
+export async function getPublishedEvents() {
+  return (await getEvents()).filter((e) => e.status === 'published');
 }
-export function deleteEvent(id) { write(EV_KEY, getEvents().filter((e) => e.id !== id)); ping(); }
+export async function getEventBySlug(slug) {
+  const events = await getEvents();
+  return events.find((e) => e.slug === slug || e.id === slug) || null;
+}
+export async function saveEvent(ev) {
+  const res = await fetch('/api/cms-events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event: ev })
+  });
+  invalidateCache();
+  return res.ok;
+}
+export async function deleteEvent(id) {
+  await fetch('/api/cms-events', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  });
+  invalidateCache();
+}
 export function makeSlug(text) {
   return String(text).toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48) || ('ev-' + Date.now());
 }
 
 // ---- partners ----
-const PT_KEY = 'nesu-cms-partners';
-function seedPartners() {
-  if (localStorage.getItem(PT_KEY)) return;
-  write(PT_KEY, PARTNERS.map((p) => ({ id: p.id, name: p.name, mark: p.mark, img: '' })));
+export async function getPartners() {
+  const data = await fetchData();
+  return data.partners || [];
 }
-export function getPartners() { seedPartners(); return read(PT_KEY, []); }
-export function savePartners(list) { const ok = write(PT_KEY, list); ping(); return ok; }
+export async function savePartners(list) {
+  const res = await fetch('/api/cms-save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ section: 'partners', list })
+  });
+  invalidateCache();
+  return res.ok;
+}
 
 // ---- site text content overrides ----
-export function getContent() { return read(CT_KEY, {}); }
-export function setContent(key, vals) { const c = getContent(); c[key] = vals; const ok = write(CT_KEY, c); ping(); return ok; }
-// Merge many keys in a single write — used by the admin "Save changes" button
-// so one large batch of text edits doesn't turn into dozens of separate
-// localStorage writes (slow, and each is an independent quota-failure point).
-export function setContentBatch(entries) {
-  const c = getContent();
-  Object.keys(entries).forEach((k) => { c[k] = entries[k]; });
-  const ok = write(CT_KEY, c);
-  ping();
-  return ok;
+export async function getContent() {
+  const data = await fetchData();
+  return data.content || {};
+}
+export async function setContentBatch(entries) {
+  const res = await fetch('/api/cms-save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ section: 'content', entries })
+  });
+  invalidateCache();
+  return res.ok;
 }
 
 // ---- logo asset slots ----
-export function getLogos() { return read(LG_KEY, {}); }
-export function setLogo(slot, dataUrl) {
-  const l = getLogos();
-  if (dataUrl) l[slot] = dataUrl; else delete l[slot];
-  const ok = write(LG_KEY, l);
-  ping();
-  return ok;
+export async function getLogos() {
+  const data = await fetchData();
+  return data.logos || {};
+}
+export async function setLogo(slot, url) {
+  const res = await fetch('/api/cms-save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ section: 'logos', slot, url: url || null })
+  });
+  invalidateCache();
+  return res.ok;
+}
+
+// ---- image uploads ----
+// Takes a data URL (as produced by FileReader/img-resize), uploads it to
+// Blob storage, and returns a real hosted URL to store in an event/logo/
+// partner field — never store raw data URLs in the shared document.
+export async function uploadImage(dataUrl) {
+  const res = await fetch('/api/cms-upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dataUrl })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return { ok: false, error: data.error || 'Upload failed' };
+  return { ok: true, url: data.url };
 }
 
 // ---- test-mode bug reports ----
-// PRODUCTION SEAM: POST these to a backend (and/or forward to the staff
-// Telegram channel) instead of localStorage.
-const RP_KEY = 'nesu-feedback-reports';
-export function saveReport(r) {
-  const list = read(RP_KEY, []);
-  list.push(Object.assign({ at: new Date().toISOString() }, r));
-  const ok = write(RP_KEY, list);
-  // Best-effort forward to staff via Telegram; local save above stays the source of truth.
+// Forwarded live via Telegram (api/telegram-notify.js) — no separate
+// persistence, since there's no admin UI reading these back.
+export async function saveReport(r) {
   try {
-    fetch('/api/telegram-notify', {
+    await fetch('/api/telegram-notify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'bug_report',
-        name: r.name,
-        email: r.email,
-        complaint: r.complaint,
-        page: r.page
-      })
-    }).catch(() => {});
-  } catch (e) {}
-  return ok;
-}
-export function getReports() { return read(RP_KEY, []); }
-
-// ---- auth (prototype only) ----
-export function login(user, pass) {
-  if (user === 'admin' && pass === 'nesu2026') {
-    try { sessionStorage.setItem(AUTH_KEY, '1'); } catch (e) {}
+      body: JSON.stringify({ type: 'bug_report', name: r.name, email: r.email, complaint: r.complaint, page: r.page })
+    });
     return true;
+  } catch (e) {
+    return false;
   }
-  return false;
 }
-export function isLoggedIn() { try { return sessionStorage.getItem(AUTH_KEY) === '1'; } catch (e) { return false; } }
-export function logout() { try { sessionStorage.removeItem(AUTH_KEY); } catch (e) {} }
+
+// ---- auth ----
+export async function login(user, pass) {
+  const res = await fetch('/api/cms-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user, pass })
+  });
+  return res.ok;
+}
+export async function isLoggedIn() {
+  try {
+    const res = await fetch('/api/cms-session');
+    const data = await res.json();
+    return !!data.loggedIn;
+  } catch (e) {
+    return false;
+  }
+}
+export async function logout() {
+  await fetch('/api/cms-logout', { method: 'POST' });
+}

@@ -239,12 +239,12 @@ class Component extends DCLogic {
     let cmsEvents = [];
     try {
       const cms = await import(new URL('cms-store.js', document.baseURI).href);
-      cmsEvents = cms.getPublishedEvents();
+      cmsEvents = await cms.getPublishedEvents();
     } catch (e) {}
     let cmsPartners = [];
     try {
       const cms2 = await import(new URL('cms-store.js', document.baseURI).href);
-      cmsPartners = cms2.getPartners();
+      cmsPartners = await cms2.getPartners();
     } catch (e) {}
     this.setState({ news, cmsEvents, cmsPartners });
   }

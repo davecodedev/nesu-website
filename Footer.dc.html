@@ -157,12 +157,10 @@ class Component extends DCLogic {
   footRef = React.createRef();
 
   async componentDidMount() {
-    this._readLogos = () => {
-      try { this.setState({ logos: JSON.parse(localStorage.getItem('nesu-cms-logos') || '{}') }); }
-      catch (e) { this.setState({ logos: {} }); }
-    };
-    this._readLogos();
-    window.addEventListener('nesu-content-changed', this._readLogos);
+    import(new URL('cms-store.js', document.baseURI).href)
+      .then((cms) => cms.getLogos())
+      .then((logos) => this.setState({ logos }))
+      .catch(() => this.setState({ logos: {} }));
     const m = await import(new URL('i18n.js', document.baseURI).href);
     this.m = m;
     this.setState({ lang: m.getLang() });
@@ -217,7 +215,6 @@ class Component extends DCLogic {
     if (this._t3) clearTimeout(this._t3);
     if (this._poll) clearInterval(this._poll);
     if (this._onScrollChk) window.removeEventListener('scroll', this._onScrollChk);
-    if (this._readLogos) window.removeEventListener('nesu-content-changed', this._readLogos);
   }
 
   renderVals() {

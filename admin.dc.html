@@ -50,7 +50,6 @@
     </label>
     <span style="font-size: 13px; color: #B4232A; min-height: 16px">{{ error }}</span>
     <button onClick="{{ submit }}" style="background: #0057B8; color: #FFFFFF; border: none; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; font-weight: 600; padding: 12px; border-radius: 3px" style-hover="background: #0E2344">Sign in</button>
-    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #7A8CA6">Prototype credentials: admin / nesu2026</span>
   </div>
 </div>
 </x-dc>
@@ -60,12 +59,13 @@ class Component extends DCLogic {
 
   async componentDidMount() {
     this.cms = await import(new URL('cms-store.js', document.baseURI).href);
-    if (this.cms.isLoggedIn()) window.location.replace('admin-events.dc.html');
+    if (await this.cms.isLoggedIn()) window.location.replace('admin-events.dc.html');
   }
 
-  submit = () => {
+  submit = async () => {
     if (!this.cms) return;
-    if (this.cms.login(this.state.user.trim(), this.state.pass)) {
+    const ok = await this.cms.login(this.state.user.trim(), this.state.pass);
+    if (ok) {
       window.location.href = 'admin-events.dc.html';
     } else {
       this.setState({ error: 'Invalid username or password.' });
