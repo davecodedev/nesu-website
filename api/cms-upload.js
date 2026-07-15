@@ -42,6 +42,7 @@ module.exports = async (req, res) => {
     const blob = await put(name, buf, { access: 'public', contentType: mime });
     res.status(200).json({ url: blob.url });
   } catch (e) {
+    console.error('[cms-upload] put failed:', e && e.message, e);
     res.status(502).json({ error: 'Upload failed' });
   }
 };
