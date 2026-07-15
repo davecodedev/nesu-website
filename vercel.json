@@ -1,9 +1,8 @@
 {
-  "crons": [
-    { "path": "/api/telegram-cron", "schedule": "0 3 * * *" }
-  ],
   "functions": {
-    "api/telegram-cron.js": { "maxDuration": 30 },
-    "api/telegram-webhook.js": { "maxDuration": 30 }
+    "api/telegram-webhook.js": { "maxDuration": 30 },
+    "api/telegram-daily-post.js": { "maxDuration": 30 },
+    "api/telegram-quiz-remind.js": { "maxDuration": 15 },
+    "api/telegram-quiz-start.js": { "maxDuration": 30 }
   }
 }

@@ -1,0 +1,39 @@
+name: Telegram scheduled posts
+
+# Vercel's free (Hobby) plan caps cron jobs at 2/day, which isn't enough for
+# our 4 exact daily trigger times — so scheduling lives here instead, free,
+# via curl against the deployed API. Note: GitHub's schedule triggers are
+# best-effort and can slip by a few minutes under load, so treat 10:00/20:00
+# etc. as "close to" rather than to-the-second.
+
+on:
+  schedule:
+    - cron: '0 5 * * *'    # 10:00 Tashkent — daily "Did you know?" post
+    - cron: '50 14 * * *'  # 19:50 Tashkent — quiz reminder (10 min out)
+    - cron: '55 14 * * *'  # 19:55 Tashkent — quiz reminder (5 min out)
+    - cron: '0 15 * * *'   # 20:00 Tashkent — quiz start (10 questions)
+  workflow_dispatch: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the endpoint for this schedule
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          set -e
+          case "$SCHEDULE" in
+            "0 5 * * *")
+              curl -fsS -X GET "https://www.nesu.uz/api/telegram-daily-post" -H "Authorization: Bearer $CRON_SECRET" ;;
+            "50 14 * * *")
+              curl -fsS -X GET "https://www.nesu.uz/api/telegram-quiz-remind?minutes=10" -H "Authorization: Bearer $CRON_SECRET" ;;
+            "55 14 * * *")
+              curl -fsS -X GET "https://www.nesu.uz/api/telegram-quiz-remind?minutes=5" -H "Authorization: Bearer $CRON_SECRET" ;;
+            "0 15 * * *")
+              curl -fsS -X GET "https://www.nesu.uz/api/telegram-quiz-start" -H "Authorization: Bearer $CRON_SECRET" ;;
+            *)
+              echo "Manual run (workflow_dispatch) — defaulting to the daily post"
+              curl -fsS -X GET "https://www.nesu.uz/api/telegram-daily-post" -H "Authorization: Bearer $CRON_SECRET" ;;
+          esac
