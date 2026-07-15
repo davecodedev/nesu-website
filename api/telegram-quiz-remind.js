@@ -1,9 +1,13 @@
-// Heads-up post before the nightly quiz — triggered by GitHub Actions crons
-// at 19:50 and 19:55 Tashkent time, i.e. 10 and 5 minutes before the 20:00
-// quiz. Which one fires is passed as ?minutes=10 or ?minutes=5.
+// Heads-up post before the quiz — triggered by GitHub Actions crons at
+// 19:50 and 19:55 Tashkent time on Mon/Wed/Fri, i.e. 10 and 5 minutes
+// before the 20:00 quiz. Which one fires is passed as ?minutes=10 or
+// ?minutes=5.
 
 const { sendMessage, channelId } = require('./_lib/telegram');
 const { isAuthorizedCron } = require('./_lib/auth');
+const { isLive, tashkentWeekday } = require('./_lib/content');
+
+const QUIZ_WEEKDAYS = [1, 3, 5]; // Mon, Wed, Fri
 
 const MESSAGES = {
   10: '⏰ <b>10 minutes</b> until tonight’s NESU quiz! 10 questions on science & engineering — first one drops at 20:00. Turn on notifications so you don’t miss it! 🔔',
@@ -13,6 +17,12 @@ const MESSAGES = {
 module.exports = async (req, res) => {
   if (!isAuthorizedCron(req)) {
     res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
+  const now = new Date();
+  if (!isLive(now) || !QUIZ_WEEKDAYS.includes(tashkentWeekday(now))) {
+    res.status(200).json({ ok: true, skipped: true });
     return;
   }
 

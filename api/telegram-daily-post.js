@@ -7,7 +7,7 @@
 const { sendMessage, sendPhoto, channelId } = require('./_lib/telegram');
 const { fetchImage } = require('./_lib/pexels');
 const { isAuthorizedCron } = require('./_lib/auth');
-const { CTA, DID_YOU_KNOW, pickForToday } = require('./_lib/content');
+const { CTA, DID_YOU_KNOW, pickForToday, isLive } = require('./_lib/content');
 
 const CAPTION_LIMIT = 1024;
 
@@ -32,6 +32,11 @@ module.exports = async (req, res) => {
   }
 
   const now = new Date();
+  if (!isLive(now)) {
+    res.status(200).json({ ok: true, skipped: 'not live yet' });
+    return;
+  }
+
   const item = pickForToday(DID_YOU_KNOW, now);
   const text = formatPost(item);
 

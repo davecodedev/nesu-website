@@ -127,4 +127,27 @@ function pickTenForToday(list, date) {
   return seededShuffle(list, dayOfYear(date)).slice(0, 10);
 }
 
-module.exports = { CTA, DID_YOU_KNOW, QUIZ_SEEDS, dayOfYear, pickForToday, pickTenForToday };
+// Automated posting starts this Tashkent-local calendar date (not before) —
+// requested explicitly so testing today doesn't count as the real launch.
+// Change this if you want to push the start date further out.
+const LIVE_FROM = '2026-07-16';
+
+function tashkentDateString(date) {
+  const t = new Date(date.getTime() + 5 * 3600 * 1000); // UTC+5, no DST in Uzbekistan
+  const y = t.getUTCFullYear();
+  const m = String(t.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(t.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function isLive(date) {
+  return tashkentDateString(date) >= LIVE_FROM;
+}
+
+// 0=Sun, 1=Mon, ... 6=Sat, evaluated against the Tashkent-local calendar day.
+function tashkentWeekday(date) {
+  const t = new Date(date.getTime() + 5 * 3600 * 1000);
+  return t.getUTCDay();
+}
+
+module.exports = { CTA, DID_YOU_KNOW, QUIZ_SEEDS, dayOfYear, pickForToday, pickTenForToday, isLive, tashkentWeekday };

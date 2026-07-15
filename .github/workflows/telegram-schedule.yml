@@ -8,10 +8,10 @@ name: Telegram scheduled posts
 
 on:
   schedule:
-    - cron: '0 5 * * *'    # 10:00 Tashkent — daily "Did you know?" post
-    - cron: '50 14 * * *'  # 19:50 Tashkent — quiz reminder (10 min out)
-    - cron: '55 14 * * *'  # 19:55 Tashkent — quiz reminder (5 min out)
-    - cron: '0 15 * * *'   # 20:00 Tashkent — quiz start (10 questions)
+    - cron: '0 5 * * *'        # 10:00 Tashkent, every day — "Did you know?" post
+    - cron: '50 14 * * 1,3,5'  # 19:50 Tashkent, Mon/Wed/Fri — quiz reminder (10 min out)
+    - cron: '55 14 * * 1,3,5'  # 19:55 Tashkent, Mon/Wed/Fri — quiz reminder (5 min out)
+    - cron: '0 15 * * 1,3,5'   # 20:00 Tashkent, Mon/Wed/Fri — quiz start (10 questions)
   workflow_dispatch: {}
 
 jobs:
@@ -27,11 +27,11 @@ jobs:
           case "$SCHEDULE" in
             "0 5 * * *")
               curl -fsS -X GET "https://www.nesu.uz/api/telegram-daily-post" -H "Authorization: Bearer $CRON_SECRET" ;;
-            "50 14 * * *")
+            "50 14 * * 1,3,5")
               curl -fsS -X GET "https://www.nesu.uz/api/telegram-quiz-remind?minutes=10" -H "Authorization: Bearer $CRON_SECRET" ;;
-            "55 14 * * *")
+            "55 14 * * 1,3,5")
               curl -fsS -X GET "https://www.nesu.uz/api/telegram-quiz-remind?minutes=5" -H "Authorization: Bearer $CRON_SECRET" ;;
-            "0 15 * * *")
+            "0 15 * * 1,3,5")
               curl -fsS -X GET "https://www.nesu.uz/api/telegram-quiz-start" -H "Authorization: Bearer $CRON_SECRET" ;;
             *)
               echo "Manual run (workflow_dispatch) — defaulting to the daily post"
