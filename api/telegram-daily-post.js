@@ -11,8 +11,18 @@ const { CTA, DID_YOU_KNOW, pickForToday } = require('./_lib/content');
 
 const CAPTION_LIMIT = 1024;
 
+// Every paragraph gets a leading emoji, and the closing paragraph — usually
+// the most quotable line — renders as a Telegram blockquote.
+function formatBody(body) {
+  const paragraphs = body.split('\n\n');
+  const closing = paragraphs.pop();
+  const lead = paragraphs.map((p) => `🔹 ${p}`).join('\n\n');
+  const quote = `<blockquote>💡 ${closing}</blockquote>`;
+  return lead ? `${lead}\n\n${quote}` : quote;
+}
+
 function formatPost(item) {
-  return `${item.emoji} <b>Did you know? — ${item.title}</b>\n\n${item.body}\n\n${CTA}\n\n#NESU #Engineering #${item.hashtag}\n\n@nesuuz`;
+  return `${item.emoji} <b>Did you know? — ${item.title}</b>\n\n${formatBody(item.body)}\n\n${CTA}\n\n#NESU #Engineering #${item.hashtag}\n\n@nesuuz`;
 }
 
 module.exports = async (req, res) => {
