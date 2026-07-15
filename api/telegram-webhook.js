@@ -94,6 +94,8 @@ module.exports = async (req, res) => {
   try {
     if (update.message && update.message.photo && isAdmin(update.message.from.id)) {
       await handlePhotoSubmission(update.message);
+    } else if (update.message && update.message.text && isAdmin(update.message.from.id)) {
+      await sendMessage(update.message.from.id, 'Send me a photo with a caption describing the event, and I\'ll show you a channel post preview to approve or discard.');
     } else if (update.callback_query) {
       await handleCallback(update.callback_query);
     }
