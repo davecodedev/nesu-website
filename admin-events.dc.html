@@ -122,6 +122,7 @@ class Component extends DCLogic {
   async componentDidMount() {
     this.cms = await import(new URL('cms-store.js', document.baseURI).href);
     if (!this.cms.isLoggedIn()) { window.location.replace('admin.dc.html'); return; }
+    this.imgResize = await import(new URL('img-resize.js', document.baseURI).href);
     this.setState({ events: this.cms.getEvents() });
   }
 
@@ -162,9 +163,19 @@ class Component extends DCLogic {
   onFiles = (e) => {
     const files = Array.from(e.target.files || []);
     files.forEach((f) => {
-      const r = new FileReader();
-      r.onload = () => this.setState((s) => ({ photos: s.photos.concat([r.result]) }));
-      r.readAsDataURL(f);
+      // Compress to ~1280px JPEG so a handful of camera photos don't blow
+      // past localStorage's per-origin quota (a few MB total).
+      const resize = this.imgResize
+        ? this.imgResize.resizeImageFile(f, 1280, 0.8)
+        : new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(r.result);
+            r.onerror = () => reject(new Error('read failed'));
+            r.readAsDataURL(f);
+          });
+      resize
+        .then((dataUrl) => this.setState((s) => ({ photos: s.photos.concat([dataUrl]), formError: '' })))
+        .catch(() => this.setState({ formError: 'Could not process one of the photos — try a different file.' }));
     });
     e.target.value = '';
   };

@@ -58,18 +58,30 @@ function seedPartners() {
   write(PT_KEY, PARTNERS.map((p) => ({ id: p.id, name: p.name, mark: p.mark, img: '' })));
 }
 export function getPartners() { seedPartners(); return read(PT_KEY, []); }
-export function savePartners(list) { write(PT_KEY, list); ping(); }
+export function savePartners(list) { const ok = write(PT_KEY, list); ping(); return ok; }
 
 // ---- site text content overrides ----
 export function getContent() { return read(CT_KEY, {}); }
-export function setContent(key, vals) { const c = getContent(); c[key] = vals; write(CT_KEY, c); ping(); }
+export function setContent(key, vals) { const c = getContent(); c[key] = vals; const ok = write(CT_KEY, c); ping(); return ok; }
+// Merge many keys in a single write — used by the admin "Save changes" button
+// so one large batch of text edits doesn't turn into dozens of separate
+// localStorage writes (slow, and each is an independent quota-failure point).
+export function setContentBatch(entries) {
+  const c = getContent();
+  Object.keys(entries).forEach((k) => { c[k] = entries[k]; });
+  const ok = write(CT_KEY, c);
+  ping();
+  return ok;
+}
 
 // ---- logo asset slots ----
 export function getLogos() { return read(LG_KEY, {}); }
 export function setLogo(slot, dataUrl) {
   const l = getLogos();
   if (dataUrl) l[slot] = dataUrl; else delete l[slot];
-  write(LG_KEY, l); ping();
+  const ok = write(LG_KEY, l);
+  ping();
+  return ok;
 }
 
 // ---- test-mode bug reports ----

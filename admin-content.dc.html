@@ -34,14 +34,15 @@
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
       <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #0E2344">Site content</h1>
       <div style="display: flex; align-items: center; gap: 14px">
-        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #00A3A3">{{ savedMsg }}</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{ savedMsgColor }}">{{ savedMsg }}</span>
         <button onClick="{{ saveAll }}" style="background: #0057B8; color: #FFFFFF; border: none; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; font-weight: 600; padding: 10px 20px" style-hover="background: #0E2344">Save changes</button>
       </div>
     </div>
 
     <div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 24px">
       <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Logo assets</span>
-      <p style="margin: 8px 0 0; font-size: 13px; color: #4B5563">Replace the marks used across the site. Empty slots fall back to the built-in SVG lockup.</p>
+      <p style="margin: 8px 0 0; font-size: 13px; color: #4B5563">Replace the marks used across the site. Empty slots fall back to the built-in SVG lockup. Max 800KB per image.</p>
+      <span style="display: block; margin-top: 8px; font-size: 12.5px; color: #B4232A; min-height: 16px">{{ logoError }}</span>
       <div style="display: flex; gap: 20px; margin-top: 18px; flex-wrap: wrap">
         <sc-for list="{{ logoSlots }}" as="slot" hint-placeholder-count="3">
           <div style="display: flex; flex-direction: column; gap: 10px; border: 1px solid #E2E6EC; border-radius: 4px; padding: 16px; width: 200px">
@@ -68,7 +69,8 @@
         <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Partners</span>
         <button onClick="{{ addPartner }}" style="background: none; border: 1px solid #C9D2DD; border-radius: 3px; cursor: pointer; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12.5px; font-weight: 600; color: #0057B8; padding: 7px 14px" style-hover="border-color: #0057B8">+ Add partner</button>
       </div>
-      <p style="margin: 8px 0 0; font-size: 13px; color: #4B5563">Shown in the homepage carousel and on the About page. Logo optional — the monogram is used when empty.</p>
+      <p style="margin: 8px 0 0; font-size: 13px; color: #4B5563">Shown in the homepage carousel and on the About page. Logo optional — the monogram is used when empty. Max 800KB per image.</p>
+      <span style="display: block; margin-top: 8px; font-size: 12.5px; color: #B4232A; min-height: 16px">{{ partnersError }}</span>
       <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px">
         <sc-for list="{{ partnerRows }}" as="pr" hint-placeholder-count="8">
           <div style="display: flex; align-items: center; gap: 14px; border: 1px solid #EEF1F4; border-radius: 3px; padding: 10px 14px; flex-wrap: wrap">
@@ -113,7 +115,8 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { texts: {}, logos: {}, partners: [], savedMsg: '', ready: false };
+  state = { texts: {}, logos: {}, partners: [], savedMsg: '', savedMsgColor: '#00A3A3', logoError: '', partnersError: '', ready: false };
+  MAX_IMAGE_BYTES = 800 * 1024;
 
   GROUP_ORDER = ['brand', 'nav', 'cta', 'home', 'about', 'events', 'competitions', 'news', 'fields', 'fieldDetail', 'activity', 'gallery', 'qa', 'contact', 'footer', 'intro', 'blackout', 'assistant', 'common'];
   GROUP_LABELS = { brand: 'Brand', nav: 'Navigation', cta: 'Calls to action', home: 'Home', about: 'About', events: 'Events', competitions: 'Competitions', news: 'News', fields: 'Fields index', fieldDetail: 'Field detail', activity: 'Field activities', gallery: 'Gallery', qa: 'Q&A', contact: 'Contact', footer: 'Footer', intro: 'Intro experience', blackout: 'Blackout interstitial', assistant: 'AI assistant', common: 'Shared labels' };
@@ -151,11 +154,20 @@ class Component extends DCLogic {
     return (e) => {
       const f = e.target.files && e.target.files[0];
       if (!f) return;
+      if (f.size > this.MAX_IMAGE_BYTES) {
+        this.setState({ logoError: 'That image is too large (max 800KB) — resize it and try again.' });
+        e.target.value = '';
+        return;
+      }
       const r = new FileReader();
       r.onload = () => {
-        this.cms.setLogo(slot, r.result);
-        this.setState({ logos: this.cms.getLogos() });
+        const ok = this.cms.setLogo(slot, r.result);
+        this.setState({
+          logos: this.cms.getLogos(),
+          logoError: ok ? '' : 'Could not save — local storage is full. Remove another image first.'
+        });
       };
+      r.onerror = () => this.setState({ logoError: 'Could not read that file.' });
       r.readAsDataURL(f);
       e.target.value = '';
     };
@@ -193,8 +205,14 @@ class Component extends DCLogic {
       upload: (e) => {
         const f = e.target.files && e.target.files[0];
         if (!f) return;
+        if (f.size > this.MAX_IMAGE_BYTES) {
+          this.setState({ partnersError: 'That image is too large (max 800KB) — resize it and try again.' });
+          e.target.value = '';
+          return;
+        }
         const r = new FileReader();
-        r.onload = () => setP(i, { img: r.result });
+        r.onload = () => { setP(i, { img: r.result }); this.setState({ partnersError: '' }); };
+        r.onerror = () => this.setState({ partnersError: 'Could not read that file.' });
         r.readAsDataURL(f);
         e.target.value = '';
       },
@@ -220,6 +238,9 @@ class Component extends DCLogic {
       logoSlots,
       groups,
       savedMsg: s.savedMsg,
+      savedMsgColor: s.savedMsgColor || '#00A3A3',
+      logoError: s.logoError,
+      partnersError: s.partnersError,
       partnerRows,
       addPartner: () => this.setState((st) => ({
         partners: st.partners.concat([{ id: 'pt-' + Date.now(), name: '', mark: '', img: '' }]),
@@ -227,9 +248,13 @@ class Component extends DCLogic {
       })),
       saveAll: () => {
         if (!this.cms) return;
-        Object.keys(s.texts).forEach((k) => this.cms.setContent(k, s.texts[k]));
-        this.cms.savePartners((this.state.partners || []).filter((p) => (p.name || '').trim()));
-        this.setState({ savedMsg: 'Saved ✓' });
+        const contentOk = this.cms.setContentBatch(s.texts);
+        const partnersOk = this.cms.savePartners((this.state.partners || []).filter((p) => (p.name || '').trim()));
+        const allOk = contentOk && partnersOk;
+        this.setState({
+          savedMsg: allOk ? 'Saved ✓' : 'Local storage is full — some changes were not saved. Remove a large image and try again.',
+          savedMsgColor: allOk ? '#00A3A3' : '#B4232A'
+        });
       },
       logout: () => { this.cms.logout(); window.location.href = 'admin.dc.html'; }
     };
