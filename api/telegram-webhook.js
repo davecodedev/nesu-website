@@ -98,9 +98,18 @@ module.exports = async (req, res) => {
       await sendMessage(update.message.from.id, 'Send me a photo with a caption describing the event, and I\'ll show you a channel post preview to approve or discard.');
     } else if (update.callback_query) {
       await handleCallback(update.callback_query);
+    } else if (update.message && update.message.text) {
+      // TEMP DEBUG: reveals why isAdmin didn't match, remove once resolved.
+      const senderId = update.message.from.id;
+      const adminEnv = process.env.TELEGRAM_ADMIN_ID;
+      await sendMessage(senderId, `debug: senderId=${senderId} adminEnvRaw=${JSON.stringify(adminEnv)} isAdmin=${isAdmin(senderId)}`);
     }
   } catch (e) {
     // Best-effort: nothing more we can do once the 200 ack has been sent.
     console.error('telegram-webhook error:', e);
+    try {
+      const fallbackChat = (update.message && update.message.from && update.message.from.id) || (update.callback_query && update.callback_query.from.id);
+      if (fallbackChat) await sendMessage(fallbackChat, 'debug: webhook threw ' + String((e && e.message) || e));
+    } catch (e2) { /* nothing more we can do */ }
   }
 };
