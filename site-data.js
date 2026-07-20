@@ -27,14 +27,11 @@ export const COMPETITIONS = [
 ];
 
 export const PARTNERS = [
-  { id: 'uzgrid', name: 'UzGrid', mark: 'UG' },
-  { id: 'karakum', name: 'Karakum Cement', mark: 'KC' },
-  { id: 'navoi-mw', name: 'Navoi Machine Works', mark: 'NM' },
-  { id: 'silkrail', name: 'Silk Road Rail', mark: 'SR' },
-  { id: 'chirchiq', name: 'Chirchiq Chemicals', mark: 'CH' },
-  { id: 'aral-hydro', name: 'Aral Hydro', mark: 'AH' },
-  { id: 'registan-soft', name: 'Registan Software', mark: 'RS' },
-  { id: 'oxus-steel', name: 'Oxus Steel', mark: 'OS' }
+  { id: 'bs-sat-academy', name: 'B&S SAT Academy', mark: 'BS', img: 'logos/bs-sat-academy.jpg' },
+  { id: 'ivybek', name: 'Ivybek', mark: 'IB', img: 'logos/ivybek.jpg' },
+  { id: 'uzlab', name: 'UzLab', mark: 'UL', img: 'logos/uzlab.png' },
+  { id: 'target-intl-school', name: 'Target International School', mark: 'TI', img: 'logos/target-international-school.jpg' },
+  { id: 'triplepoint-engineering', name: 'TriplePoint Engineering', mark: 'TP', img: 'logos/triplepoint-engineering.webp' }
 ];
 
 export const GALLERY = [

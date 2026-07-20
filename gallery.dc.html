@@ -8,7 +8,7 @@
 <body>
 <x-dc>
 <helmet>
-  <title>Gallery — NESU</title>
+  <title>News & Gallery — NESU</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,29 +16,124 @@
     body { margin: 0; background: var(--bg); font-family: 'IBM Plex Sans', system-ui, sans-serif; }
     a { color: var(--blue); }
     a:hover { color: var(--text); }
+    .nn-card {
+      transition: transform 0.08s linear, height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+    }
+    .nn-card.nn-settle {
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.45s ease;
+    }
+    .nn-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    .nn-caption { scrollbar-width: thin; }
+    .nn-caption::-webkit-scrollbar { width: 6px; }
+    .nn-caption::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+    .nn-minimap-tick:hover .nn-minimap-label, .nn-minimap-tick:focus-visible .nn-minimap-label { opacity: 1 !important; transform: translateY(-50%) translateX(0) !important; }
+    @keyframes nnLightboxIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+    .nn-lightbox-media { animation: nnLightboxIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    @media (prefers-reduced-motion: reduce) {
+      .nn-card, .nn-card.nn-settle { transition: height 0.01s linear !important; }
+      .nn-lightbox-media { animation: none; }
+    }
   </style>
 </helmet>
 <div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
   <dc-import name="Header" active="gallery" hint-size="100%,80px"></dc-import>
-  <main data-screen-label="Gallery" style="flex: 1">
+  <main data-screen-label="News & Gallery" style="flex: 1">
     <section style="max-width: 1280px; margin: 0 auto; padding: 80px 32px 0">
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3" data-reveal>{{ kicker }}</span>
-      <h1 data-reveal style="margin: 16px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
-      <p data-reveal style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #00A3A3">{{ kicker }}</span>
+      <h1 style="margin: 16px 0 0; font-size: clamp(32px, 7vw, 44px); font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-wrap: pretty">{{ title }}</h1>
+      <p style="margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); max-width: 620px; text-wrap: pretty">{{ intro }}</p>
       <p style="margin: 10px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-2)">{{ hint }}</p>
     </section>
-    <section style="max-width: 1280px; margin: 48px auto 0; padding: 0 32px 104px; columns: 3 240px; column-gap: 20px">
-      <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="9">
-        <button onClick="{{ ph.open }}" style="display: flex; flex-direction: column; justify-content: flex-end; width: 100%; height: {{ ph.h }}px; margin: 0 0 20px; break-inside: avoid; border: 1px solid var(--border); border-radius: 4px; padding: 16px; box-sizing: border-box; cursor: zoom-in; background-color: #10264C; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px)" style-hover="border-color: var(--blue)">
-          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.04em; color: #B9C4D4; text-align: left">{{ ph.caption }}</span>
-        </button>
-      </sc-for>
+
+    <section style="max-width: 1280px; margin: 48px auto 0; padding: 0 32px 140px">
+      <div style="position: relative; padding-left: 34px">
+        <div style="position: absolute; left: 9px; top: 6px; bottom: 6px; width: 2px; background: var(--border-2); opacity: 0.8"></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 44px 24px">
+          <sc-for list="{{ rows }}" as="row" hint-placeholder-count="12">
+            <sc-if value="{{ row.isDivider }}" hint-placeholder-val="{{ false }}">
+              <div ref="{{ row.setRef }}" style="grid-column: 1 / -1; position: sticky; top: 92px; z-index: 30; display: flex; align-items: center; gap: 10px; margin-left: -30px; pointer-events: none; scroll-margin-top: 90px">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: var(--panel); border: 3px solid var(--blue); flex: none; box-shadow: 0 0 0 4px var(--panel)"></span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.14)">{{ row.label }}</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ row.isCard }}" hint-placeholder-val="{{ false }}">
+              <div style="position: relative; height: 300px">
+                <button type="button" class="nn-card" ref="{{ row.item.setRef }}" aria-label="{{ row.item.ariaLabel }}"
+                  onMouseEnter="{{ row.item.onEnter }}" onMouseLeave="{{ row.item.onLeave }}" onMouseMove="{{ row.item.onMove }}"
+                  onFocus="{{ row.item.onEnter }}" onBlur="{{ row.item.onLeave }}" onClick="{{ row.item.onOpen }}"
+                  style="position: absolute; left: 0; right: 0; top: 0; height: {{ row.item.cardH }}px; z-index: {{ row.item.z }}; display: flex; flex-direction: column; text-align: left; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer; padding: 0; font: inherit; box-sizing: border-box">
+                  <div style="flex: 0 0 254px; position: relative; overflow: hidden; background-color: #10264C; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px)">
+                    <sc-if value="{{ row.item.hasImage }}" hint-placeholder-val="{{ true }}">
+                      <img src="{{ row.item.imgSrc }}" alt="{{ row.item.title }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block" />
+                    </sc-if>
+                    <sc-if value="{{ row.item.hasMultiBadge }}" hint-placeholder-val="{{ false }}">
+                      <span style="position: absolute; top: 10px; right: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; color: #FFFFFF; background: rgba(6,14,28,0.55); border-radius: 3px; padding: 3px 7px; backdrop-filter: blur(3px)">{{ row.item.multiCount }}</span>
+                    </sc-if>
+                    <sc-if value="{{ row.item.hasVideoBadge }}" hint-placeholder-val="{{ false }}">
+                      <span style="position: absolute; top: 10px; left: 10px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(6,14,28,0.55); backdrop-filter: blur(3px)">
+                        <svg viewBox="0 0 24 24" style="width: 10px; height: 10px; margin-left: 1px" fill="#FFFFFF"><path d="M5 3 L20 12 L5 21 Z"></path></svg>
+                      </span>
+                    </sc-if>
+                  </div>
+                  <div style="flex: 0 0 46px; display: flex; align-items: center; padding: 0 14px; border-top: 1px solid var(--border)">
+                    <span style="font-size: 14.5px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ row.item.title }}</span>
+                  </div>
+                  <sc-if value="{{ row.item.expanded }}" hint-placeholder-val="{{ false }}">
+                    <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px; padding: 12px 14px 16px; min-height: 0">
+                      <div style="display: flex; align-items: center; gap: 10px; flex: none">
+                        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-2)">{{ row.item.dateLabel }}</span>
+                        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ row.item.typeColor }}; background: {{ row.item.typeBg }}; border: 1px solid {{ row.item.typeBorder }}; border-radius: 3px; padding: 3px 8px">{{ row.item.typeLabel }}</span>
+                      </div>
+                      <p class="nn-caption" style="margin: 0; font-size: 13px; line-height: 1.55; color: var(--text-2); overflow-y: auto; flex: 1 1 auto; min-height: 0; padding-right: 4px; text-wrap: pretty">{{ row.item.caption }}</p>
+                    </div>
+                  </sc-if>
+                </button>
+              </div>
+            </sc-if>
+          </sc-for>
+        </div>
+      </div>
+      <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="border: 1px dashed var(--border-2); border-radius: 4px; padding: 56px 32px; display: flex; justify-content: center; margin-top: 24px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text-2)">{{ emptyMsg }}</span>
+        </div>
+      </sc-if>
     </section>
+
+    <sc-if value="{{ showMinimap }}" hint-placeholder-val="{{ false }}">
+      <div ref="{{ minimapRef }}" onMouseDown="{{ onRailDown }}" onMouseMove="{{ onRailMove }}" onMouseUp="{{ onRailUp }}" onMouseLeave="{{ onRailUp }}"
+        style="position: fixed; right: 10px; top: 50%; transform: translateY(-50%); z-index: 90; display: flex; flex-direction: column; align-items: center; padding: 10px 4px; border-radius: 20px; background: var(--panel); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.12)">
+        <sc-for list="{{ minimapTicks }}" as="mt" hint-placeholder-count="5">
+          <button type="button" class="nn-minimap-tick" onClick="{{ mt.onClick }}" aria-label="{{ mt.label }}" style="position: relative; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: none; border: none; cursor: pointer; padding: 0">
+            <span style="width: {{ mt.dotSize }}px; height: {{ mt.dotSize }}px; border-radius: 50%; background: {{ mt.dotColor }}; transition: all 0.25s ease"></span>
+            <span class="nn-minimap-label" style="position: absolute; right: 30px; top: 50%; transform: translateY(-50%) translateX(6px); opacity: 0; transition: all 0.2s ease; font-family: 'IBM Plex Mono', monospace; font-size: 11px; white-space: nowrap; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; color: var(--text); pointer-events: none">{{ mt.label }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+
     <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
-      <div onClick="{{ closeLightbox }}" style="position: fixed; inset: 0; z-index: 500; background: rgba(10, 24, 48, 0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; cursor: zoom-out">
-        <div style="width: min(80vw, 900px); height: min(60vh, 560px); border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; background-color: #10264C; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 12px)"></div>
-        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C7D0DD">{{ lightboxCaption }}</span>
-        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #7A8CA6">ESC / CLICK</span>
+      <div ref="{{ lightboxRef }}" tabindex="-1" role="dialog" aria-modal="true" aria-label="{{ lbAriaLabel }}" onClick="{{ closeLightbox }}" onKeyDown="{{ onLightboxKeyDown }}"
+        style="position: fixed; inset: 0; z-index: 1000; background: rgba(6,14,28,0.94); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; outline: none">
+        <button type="button" onClick="{{ closeLightbox }}" aria-label="Close" style="position: absolute; top: 18px; right: 20px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); color: #FFFFFF; font-size: 20px; line-height: 1; cursor: pointer">×</button>
+        <sc-if value="{{ hasMultiSlides }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ prevSlide }}" aria-label="Previous" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); color: #FFFFFF; font-size: 24px; line-height: 1; cursor: pointer">‹</button>
+          <button type="button" onClick="{{ nextSlide }}" aria-label="Next" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); color: #FFFFFF; font-size: 24px; line-height: 1; cursor: pointer">›</button>
+        </sc-if>
+        <div class="nn-lightbox-media" onClick="{{ stopClick }}" style="max-width: min(92vw, 980px); max-height: 68vh; display: flex; align-items: center; justify-content: center">
+          <sc-if value="{{ slideIsImage }}" hint-placeholder-val="{{ true }}">
+            <img src="{{ slideSrc }}" alt="{{ lbTitle }}" style="max-width: 100%; max-height: 68vh; object-fit: contain; border-radius: 4px; display: block" />
+          </sc-if>
+          <sc-if value="{{ slideIsVideo }}" hint-placeholder-val="{{ false }}">
+            <video src="{{ slideSrc }}" controls="{{ true }}" autoPlay="{{ true }}" style="max-width: 100%; max-height: 68vh; border-radius: 4px; background: #000000; display: block" />
+          </sc-if>
+        </div>
+        <div onClick="{{ stopClick }}" style="margin-top: 18px; max-width: min(92vw, 700px); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.55)">{{ lbCounter }}</span>
+          <span style="font-size: 17px; font-weight: 600; color: #FFFFFF">{{ lbTitle }}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.6)">{{ lbDate }}</span>
+          <p style="margin: 4px 0 0; font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,0.82); max-height: 110px; overflow-y: auto">{{ lbCaption }}</p>
+        </div>
       </div>
     </sc-if>
   </main>
@@ -48,44 +143,377 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
 class Component extends DCLogic {
-  state = { lang: 'en', lightbox: null };
+  state = { lang: 'en', items: [], loaded: false, expandedId: null, cardIdx: {}, lightbox: null, activeMonth: null, isTouch: false, isNarrow: false };
+
+  cardRefs = {};
+  dividerRefs = {};
+  itemsById = {};
+  hoverTimers = {};
+  carouselTimers = {};
+  ioTouch = null;
+  lightboxRef = React.createRef();
+  minimapRef = React.createRef();
+  lastFocusedEl = null;
+  dragging = false;
 
   async componentDidMount() {
     const m = await import(new URL('i18n.js', document.baseURI).href);
-    const d = await import(new URL('site-data.js', document.baseURI).href);
     this.m = m;
-    this.data = d;
     this.setState({ lang: m.getLang() });
     this._unsub = m.onLangChange((l) => this.setState({ lang: l }));
-    this._onKey = (e) => { if (e.key === 'Escape') this.setState({ lightbox: null }); };
-    window.addEventListener('keydown', this._onKey);
     await m.load();
     this.forceUpdate();
+
+    this._mqTouch = window.matchMedia('(hover: none)');
+    this._onMqTouch = () => this.setState({ isTouch: this._mqTouch.matches });
+    this._onMqTouch();
+    this._mqTouch.addEventListener('change', this._onMqTouch);
+
+    this._mqNarrow = window.matchMedia('(max-width: 1360px)');
+    this._onMqNarrow = () => this.setState({ isNarrow: this._mqNarrow.matches });
+    this._onMqNarrow();
+    this._mqNarrow.addEventListener('change', this._onMqNarrow);
+    this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    try {
+      const res = await fetch(new URL('nesu-database.json', document.baseURI).href);
+      const data = await res.json();
+      const items = (data.items || []).slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+      items.forEach((it) => { this.itemsById[it.id] = it; });
+      this.setState({ items, loaded: true });
+    } catch (e) {
+      this.setState({ loaded: true });
+    }
+
+    this._onScroll = () => this.scheduleActiveMonthCheck();
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      this.ioTouch = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const item = entry.target.__nnItem;
+          if (!item) return;
+          if (entry.isIntersecting) {
+            if (this.state.isTouch) this.startCarousel(item);
+          } else {
+            this.stopCarousel(item.id, true);
+          }
+        });
+      }, { threshold: 0.4 });
+    }
   }
 
   componentWillUnmount() {
     if (this._unsub) this._unsub();
-    window.removeEventListener('keydown', this._onKey);
+    if (this._mqTouch) this._mqTouch.removeEventListener('change', this._onMqTouch);
+    if (this._mqNarrow) this._mqNarrow.removeEventListener('change', this._onMqNarrow);
+    if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
+    if (this.ioTouch) this.ioTouch.disconnect();
+    Object.keys(this.carouselTimers).forEach((k) => clearInterval(this.carouselTimers[k]));
+    Object.keys(this.hoverTimers).forEach((k) => clearTimeout(this.hoverTimers[k]));
+  }
+
+
+  scheduleActiveMonthCheck() {
+    if (this._rafPending) return;
+    this._rafPending = true;
+    requestAnimationFrame(() => {
+      this._rafPending = false;
+      let active = null;
+      Object.keys(this.dividerRefs).forEach((month) => {
+        const el = this.dividerRefs[month];
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        if (r.top <= 112 && (!active || month > active)) active = month;
+      });
+      if (active && active !== this.state.activeMonth) this.setState({ activeMonth: active });
+    });
+  }
+
+  setCardRef(item) {
+    return (el) => {
+      const prev = this.cardRefs[item.id];
+      if (prev && this.ioTouch) this.ioTouch.unobserve(prev);
+      if (el) {
+        el.__nnItem = item;
+        this.cardRefs[item.id] = el;
+        if (this.ioTouch) this.ioTouch.observe(el);
+      } else {
+        delete this.cardRefs[item.id];
+      }
+    };
+  }
+
+  setDividerRef(month) {
+    return (el) => { if (el) this.dividerRefs[month] = el; };
+  }
+
+  startCarousel(item) {
+    const total = item.images.length;
+    if (total <= 1 && !item.video) return;
+    if (this.carouselTimers[item.id]) return;
+    this.carouselTimers[item.id] = setInterval(() => {
+      this.setState((s) => {
+        const cur = (s.cardIdx && s.cardIdx[item.id]) || 0;
+        return { cardIdx: { ...s.cardIdx, [item.id]: (cur + 1) % total } };
+      });
+    }, 1000);
+  }
+
+  stopCarousel(id, reset) {
+    if (this.carouselTimers[id]) { clearInterval(this.carouselTimers[id]); delete this.carouselTimers[id]; }
+    if (reset) this.setState((s) => (s.cardIdx && s.cardIdx[id] ? { cardIdx: { ...s.cardIdx, [id]: 0 } } : null));
+  }
+
+  handleEnter(item) {
+    return () => {
+      if (this.state.isTouch) return;
+      const el = this.cardRefs[item.id];
+      if (el && !this.reducedMotion) {
+        el.classList.remove('nn-settle');
+        el.style.transform = 'translateY(-8px) scale(1.045)';
+        el.style.boxShadow = '0 28px 54px -14px rgba(0,0,0,0.4), 0 10px 22px -8px rgba(0,0,0,0.28)';
+      }
+      clearTimeout(this.hoverTimers[item.id]);
+      this.hoverTimers[item.id] = setTimeout(() => {
+        this.setState({ expandedId: item.id });
+        this.startCarousel(item);
+      }, 150);
+    };
+  }
+
+  handleLeave(item) {
+    return () => {
+      if (this.state.isTouch) return;
+      clearTimeout(this.hoverTimers[item.id]);
+      const el = this.cardRefs[item.id];
+      if (el) {
+        el.classList.add('nn-settle');
+        el.style.transform = '';
+        el.style.boxShadow = '';
+      }
+      this.stopCarousel(item.id, true);
+      if (this.state.expandedId === item.id) this.setState({ expandedId: null });
+    };
+  }
+
+  handleMove(item) {
+    return (e) => {
+      if (this.state.isTouch || this.reducedMotion) return;
+      const el = this.cardRefs[item.id];
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      const rx = (0.5 - py) * 12;
+      const ry = (px - 0.5) * 12;
+      el.style.transform = 'perspective(900px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateY(-8px) scale(1.045)';
+    };
+  }
+
+  openLightbox(item) {
+    return (e) => {
+      const idx = (this.state.cardIdx && this.state.cardIdx[item.id]) || 0;
+      this.lastFocusedEl = this.cardRefs[item.id] || (e && e.currentTarget);
+      this.setState({ lightbox: { id: item.id, slideIndex: idx } }, () => {
+        if (this.lightboxRef.current) this.lightboxRef.current.focus();
+      });
+    };
+  }
+
+  closeLightbox(e) {
+    if (e) e.stopPropagation();
+    const toFocus = this.lastFocusedEl;
+    this.setState({ lightbox: null }, () => {
+      if (toFocus && toFocus.focus) toFocus.focus();
+    });
+  }
+
+  stopClick(e) { e.stopPropagation(); }
+
+  slidesFor(item) {
+    if (!item) return [];
+    const arr = item.images.map((src) => ({ type: 'image', src }));
+    if (item.video) arr.push({ type: 'video', src: item.video });
+    return arr;
+  }
+
+  prevSlide(e) {
+    if (e) e.stopPropagation();
+    this.setState((s) => {
+      if (!s.lightbox) return null;
+      const total = this.slidesFor(this.itemsById[s.lightbox.id]).length;
+      return { lightbox: { ...s.lightbox, slideIndex: (s.lightbox.slideIndex - 1 + total) % total } };
+    });
+  }
+
+  nextSlide(e) {
+    if (e) e.stopPropagation();
+    this.setState((s) => {
+      if (!s.lightbox) return null;
+      const total = this.slidesFor(this.itemsById[s.lightbox.id]).length;
+      return { lightbox: { ...s.lightbox, slideIndex: (s.lightbox.slideIndex + 1) % total } };
+    });
+  }
+
+  onLightboxKeyDown(e) {
+    if (e.key === 'Escape') { this.closeLightbox(); return; }
+    if (e.key === 'ArrowLeft') { this.prevSlide(); return; }
+    if (e.key === 'ArrowRight') { this.nextSlide(); return; }
+    if (e.key === 'Tab') {
+      const root = this.lightboxRef.current;
+      if (!root) return;
+      const focusables = Array.from(root.querySelectorAll('button, video, [tabindex]:not([tabindex="-1"])'));
+      if (!focusables.length) return;
+      const first = focusables[0], last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+
+  monthLabel(ym) {
+    const parts = ym.split('-');
+    return MONTH_NAMES[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+  }
+
+  formatDate(iso) {
+    const parts = iso.split('-').map(Number);
+    return parts[2] + ' ' + MONTH_SHORT[parts[1] - 1] + ' ' + parts[0];
+  }
+
+  typeMeta(type) {
+    if (type === 'event') return { label: 'Event', color: 'var(--blue)', bg: 'rgba(0,87,184,0.12)', border: 'var(--blue)' };
+    if (type === 'news') return { label: 'News', color: '#D4AF37', bg: 'rgba(212,175,55,0.14)', border: 'rgba(212,175,55,0.45)' };
+    return { label: 'Announcement', color: '#00A3A3', bg: 'var(--teal-bg)', border: 'var(--teal-border)' };
+  }
+
+  monthsList() {
+    const seen = [];
+    this.state.items.forEach((it) => { const mo = it.date.slice(0, 7); if (seen.indexOf(mo) === -1) seen.push(mo); });
+    return seen;
+  }
+
+  scrollToMonth(month) {
+    const el = this.dividerRefs[month];
+    if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  onRailDown(e) {
+    this.dragging = true;
+    const month = this.monthFromClientY(e.clientY);
+    if (month) this.scrollToMonth(month);
+  }
+
+  onRailMove(e) {
+    if (!this.dragging) return;
+    const month = this.monthFromClientY(e.clientY);
+    if (month) this.scrollToMonth(month);
+  }
+
+  onRailUp() { this.dragging = false; }
+
+  monthFromClientY(clientY) {
+    const el = this.minimapRef.current;
+    const months = this.monthsList();
+    if (!el || !months.length) return null;
+    const r = el.getBoundingClientRect();
+    const frac = Math.min(1, Math.max(0, (clientY - r.top) / r.height));
+    return months[Math.round(frac * (months.length - 1))];
+  }
+
+  buildCardProps(it) {
+    const idx = (this.state.cardIdx && this.state.cardIdx[it.id]) || 0;
+    const expanded = this.state.expandedId === it.id;
+    const tm = this.typeMeta(it.type);
+    const total = it.images.length;
+    return {
+      title: it.title,
+      caption: it.caption,
+      hasImage: total > 0,
+      imgSrc: total > 0 ? it.images[Math.min(idx, total - 1)] : '',
+      dateLabel: this.formatDate(it.date),
+      typeLabel: tm.label,
+      typeColor: tm.color,
+      typeBg: tm.bg,
+      typeBorder: tm.border,
+      expanded,
+      cardH: expanded ? 530 : 300,
+      z: expanded ? 50 : 1,
+      hasMultiBadge: total > 1,
+      multiCount: total,
+      hasVideoBadge: !!it.video,
+      ariaLabel: it.title + ', ' + tm.label + ', ' + this.formatDate(it.date),
+      setRef: this.setCardRef(it),
+      onEnter: this.handleEnter(it),
+      onLeave: this.handleLeave(it),
+      onMove: this.handleMove(it),
+      onOpen: this.openLightbox(it)
+    };
+  }
+
+  buildRows() {
+    const rows = [];
+    let lastMonth = null;
+    this.state.items.forEach((it) => {
+      const month = it.date.slice(0, 7);
+      if (month !== lastMonth) {
+        lastMonth = month;
+        rows.push({ isDivider: true, isCard: false, label: this.monthLabel(month), setRef: this.setDividerRef(month) });
+      }
+      rows.push({ isDivider: false, isCard: true, item: this.buildCardProps(it) });
+    });
+    return rows;
   }
 
   renderVals() {
     const m = this.m;
     const t = (k) => (m ? m.t(this.state.lang, k) : '');
-    const photos = (this.data ? this.data.GALLERY : []).map((p) => ({
-      caption: p.caption,
-      h: p.h,
-      open: () => this.setState({ lightbox: p })
+    const lb = this.state.lightbox;
+    const lbItem = lb ? this.itemsById[lb.id] : null;
+    const slides = lbItem ? this.slidesFor(lbItem) : [];
+    const slide = lb && slides.length ? slides[lb.slideIndex] || slides[0] : null;
+    const months = this.monthsList();
+    const minimapTicks = months.map((mo) => ({
+      label: this.monthLabel(mo),
+      dotSize: mo === this.state.activeMonth ? 10 : 6,
+      dotColor: mo === this.state.activeMonth ? 'var(--blue)' : 'var(--border-2)',
+      onClick: () => this.scrollToMonth(mo)
     }));
+
     return {
-      kicker: t('nav.gallery') ? '06 — ' + t('nav.gallery') : '',
+      kicker: t('nav.gallery') ? '05 — ' + t('nav.gallery') : '',
       title: t('gallery.title'),
       intro: t('gallery.intro'),
       hint: t('gallery.hint'),
-      photos,
-      lightboxOpen: !!this.state.lightbox,
-      lightboxCaption: this.state.lightbox ? this.state.lightbox.caption : '',
-      closeLightbox: () => this.setState({ lightbox: null })
+      rows: this.buildRows(),
+      showEmpty: this.state.loaded && this.state.items.length === 0,
+      emptyMsg: 'Nothing to show yet — check back soon.',
+      showMinimap: months.length > 1 && !this.state.isNarrow,
+      minimapRef: this.minimapRef,
+      minimapTicks,
+      onRailDown: (e) => this.onRailDown(e),
+      onRailMove: (e) => this.onRailMove(e),
+      onRailUp: () => this.onRailUp(),
+      lightboxOpen: !!lb,
+      lightboxRef: this.lightboxRef,
+      lbAriaLabel: lbItem ? lbItem.title : 'Media viewer',
+      hasMultiSlides: slides.length > 1,
+      slideIsImage: !!slide && slide.type === 'image',
+      slideIsVideo: !!slide && slide.type === 'video',
+      slideSrc: slide ? slide.src : '',
+      lbTitle: lbItem ? lbItem.title : '',
+      lbDate: lbItem ? this.formatDate(lbItem.date) : '',
+      lbCaption: lbItem ? lbItem.caption : '',
+      lbCounter: lb ? (lb.slideIndex + 1) + ' / ' + slides.length : '',
+      closeLightbox: (e) => this.closeLightbox(e),
+      prevSlide: (e) => this.prevSlide(e),
+      nextSlide: (e) => this.nextSlide(e),
+      onLightboxKeyDown: (e) => this.onLightboxKeyDown(e),
+      stopClick: (e) => this.stopClick(e)
     };
   }
 }

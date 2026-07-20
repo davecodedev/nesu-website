@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Analytics — NESU Admin</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #F3F5F7; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: #0057B8; }
+    a:hover { color: #0E2344; }
+  </style>
+</helmet>
+<div data-screen-label="Admin Analytics" style="min-height: 100vh; display: flex; background: #F3F5F7">
+  <aside style="width: 210px; flex: none; background: #0E2344; display: flex; flex-direction: column; padding: 24px 0">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: #FFFFFF; padding: 0 22px">NESU<span style="color: #00A3A3">/ADMIN</span></span>
+    <nav style="display: flex; flex-direction: column; margin-top: 28px">
+      <a href="admin-events.dc.html" style="font-size: 14px; color: #C7D0DD; text-decoration: none; padding: 11px 22px; border-left: 3px solid transparent" style-hover="color: #FFFFFF">Events</a>
+      <a href="admin-content.dc.html" style="font-size: 14px; color: #C7D0DD; text-decoration: none; padding: 11px 22px; border-left: 3px solid transparent" style-hover="color: #FFFFFF">Site content</a>
+      <a href="admin-analytics.dc.html" style="font-size: 14px; font-weight: 600; color: #FFFFFF; text-decoration: none; padding: 11px 22px; background: rgba(0, 87, 184, 0.35); border-left: 3px solid #00A3A3">Analytics</a>
+    </nav>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 2px">
+      <a href="index.dc.html" style="font-size: 13px; color: #7A8CA6; text-decoration: none; padding: 8px 22px" style-hover="color: #FFFFFF">← View site</a>
+      <button onClick="{{ logout }}" style="background: none; border: none; cursor: pointer; text-align: left; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #7A8CA6; padding: 8px 22px" style-hover="color: #FFFFFF">Log out</button>
+    </div>
+  </aside>
+  <main style="flex: 1; padding: 32px 36px; min-width: 0">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px">
+      <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #0E2344">Analytics</h1>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #4B5563">{{ subtitle }}</span>
+    </div>
+
+    <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 48px; display: flex; justify-content: center">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #4B5563">Loading…</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 48px; display: flex; justify-content: center">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #B4232A">{{ error }}</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+        <sc-for list="{{ cards }}" as="c" hint-placeholder-count="4">
+          <div style="background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 22px 24px; display: flex; flex-direction: column; gap: 6px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #4B5563">{{ c.label }}</span>
+            <span style="font-size: 30px; font-weight: 700; color: #0E2344; line-height: 1">{{ c.value }}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #7A8CA6">{{ c.sub }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="margin-top: 24px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; padding: 24px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Views per day — last 14 days</span>
+        <div style="display: flex; align-items: flex-end; gap: 8px; height: 110px; margin-top: 18px">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="14">
+            <div title="{{ b.tip }}" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #4B5563">{{ b.count }}</span>
+              <div style="width: 100%; max-width: 38px; height: {{ b.h }}px; background: {{ b.color }}; border-radius: 2px 2px 0 0"></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: #7A8CA6; white-space: nowrap">{{ b.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 4px; overflow: hidden">
+        <div style="padding: 20px 24px 14px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #4B5563">Most visited pages — last 30 days</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; padding: 8px 24px; border-bottom: 1px solid #EEF1F4">
+          <span style="flex: 1; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #7A8CA6">Page</span>
+          <span style="width: 90px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #7A8CA6">Views</span>
+          <span style="width: 110px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #7A8CA6">Avg. time</span>
+          <span style="width: 160px"></span>
+        </div>
+        <sc-for list="{{ pageRows }}" as="row" hint-placeholder-count="8">
+          <div style="display: flex; align-items: center; gap: 16px; padding: 11px 24px; border-bottom: 1px solid #EEF1F4">
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+              <span style="font-size: 14px; font-weight: 600; color: #0E2344; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ row.name }}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #7A8CA6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ row.path }}</span>
+            </div>
+            <span style="width: 90px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #0E2344">{{ row.views }}</span>
+            <span style="width: 110px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #4B5563">{{ row.avg }}</span>
+            <div style="width: 160px; height: 8px; background: #EEF1F4; border-radius: 4px; overflow: hidden">
+              <div style="width: {{ row.pct }}%; height: 100%; background: #0057B8; border-radius: 4px"></div>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noPages }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 32px 24px; display: flex; justify-content: center">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #7A8CA6">No visits recorded yet — data appears once the site gets traffic.</span>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PAGE_NAMES = {
+  '/': 'Home',
+  '/about': 'About',
+  '/events': 'Events',
+  '/event-detail': 'Event detail',
+  '/competitions': 'Competitions',
+  '/fields': 'Engineering Fields',
+  '/field-detail': 'Field detail',
+  '/gallery': 'News & Gallery',
+  '/news': 'News (redirect)',
+  '/qa': 'Q&A',
+  '/contact': 'Contact'
+};
+
+class Component extends DCLogic {
+  state = { loading: true, error: '', data: null };
+
+  async componentDidMount() {
+    this.cms = await import(new URL('cms-store.js', document.baseURI).href);
+    if (!(await this.cms.isLoggedIn())) { window.location.replace('admin.dc.html'); return; }
+    try {
+      const res = await fetch('/api/cms-analytics');
+      if (res.status === 401) { window.location.replace('admin.dc.html'); return; }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      this.setState({ loading: false, data });
+    } catch (e) {
+      this.setState({ loading: false, error: 'Could not load analytics data. Try reloading the page.' });
+    }
+  }
+
+  dayKey(offset) {
+    const d = new Date(Date.now() - offset * 86400000);
+    return d.toISOString().slice(0, 10);
+  }
+
+  sumRange(days, n) {
+    const out = { views: 0, visitors: 0, durSum: 0, durN: 0 };
+    for (let i = 0; i < n; i++) {
+      const d = days[this.dayKey(i)];
+      if (!d) continue;
+      out.views += d.views || 0;
+      out.visitors += d.visitors || 0;
+      out.durSum += d.durSum || 0;
+      out.durN += d.durN || 0;
+    }
+    return out;
+  }
+
+  fmtDur(seconds) {
+    if (!seconds || seconds <= 0) return '—';
+    const s = Math.round(seconds);
+    if (s < 60) return s + 's';
+    return Math.floor(s / 60) + 'm ' + (s % 60) + 's';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const data = s.data || { totalVisitors: 0, days: {} };
+    const days = data.days || {};
+    const today = this.sumRange(days, 1);
+    const week = this.sumRange(days, 7);
+    const month = this.sumRange(days, 30);
+
+    const cards = [
+      { label: 'Visitors today', value: String(today.visitors), sub: today.views + ' page views' },
+      { label: 'Visitors — 7 days', value: String(week.visitors), sub: week.views + ' page views' },
+      { label: 'Visitors — 30 days', value: String(month.visitors), sub: month.views + ' page views' },
+      { label: 'Avg. time on page', value: this.fmtDur(month.durN ? month.durSum / month.durN : 0), sub: 'last 30 days' },
+      { label: 'All-time visitors', value: String(data.totalVisitors || 0), sub: 'unique browsers' }
+    ];
+
+    const bars = [];
+    let maxViews = 1;
+    for (let i = 13; i >= 0; i--) {
+      const key = this.dayKey(i);
+      const v = (days[key] && days[key].views) || 0;
+      if (v > maxViews) maxViews = v;
+      bars.push({ key, v });
+    }
+    const barVals = bars.map((b) => ({
+      count: b.v ? String(b.v) : '',
+      h: Math.max(3, Math.round((b.v / maxViews) * 70)),
+      color: b.v ? '#0057B8' : '#DDE3EA',
+      label: b.key.slice(5).replace('-', '/'),
+      tip: b.key + ' — ' + b.v + ' views'
+    }));
+
+    const pageTotals = {};
+    for (let i = 0; i < 30; i++) {
+      const d = days[this.dayKey(i)];
+      if (!d || !d.pages) continue;
+      Object.keys(d.pages).forEach((path) => {
+        const p = d.pages[path];
+        const t = pageTotals[path] = pageTotals[path] || { views: 0, durSum: 0, durN: 0 };
+        t.views += p.views || 0;
+        t.durSum += p.durSum || 0;
+        t.durN += p.durN || 0;
+      });
+    }
+    const sorted = Object.keys(pageTotals)
+      .map((path) => ({ path, t: pageTotals[path] }))
+      .sort((a, b) => b.t.views - a.t.views)
+      .slice(0, 15);
+    const topViews = sorted.length ? sorted[0].t.views : 1;
+    const pageRows = sorted.map((row) => ({
+      name: PAGE_NAMES[row.path] || row.path,
+      path: row.path,
+      views: String(row.t.views),
+      avg: this.fmtDur(row.t.durN ? row.t.durSum / row.t.durN : 0),
+      pct: Math.max(2, Math.round((row.t.views / topViews) * 100))
+    }));
+
+    return {
+      subtitle: 'Anonymous first-party tracking · last 90 days retained',
+      loading: s.loading,
+      hasError: !s.loading && !!s.error,
+      error: s.error,
+      ready: !s.loading && !s.error,
+      cards,
+      bars: barVals,
+      pageRows,
+      noPages: pageRows.length === 0,
+      logout: () => { this.cms.logout().then(() => { window.location.href = 'admin.dc.html'; }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

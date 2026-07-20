@@ -1,0 +1,404 @@
+{
+  "channel": "National Engineering Society of Uzbekistan (NESU) 🇺🇿",
+  "note": "Curated from the Telegram channel export. Contains only NEWS, ANNOUNCEMENTS, and EVENTS. Fun facts, 'Did you know?' posts, and quizzes/polls are intentionally excluded. Image paths are relative to the 'photos/' and 'video_files/' folders in this export.",
+  "generated": "2026-07-20",
+  "items": [
+    {
+      "id": "club-launch",
+      "type": "announcement",
+      "title": "Engineering Club Launches",
+      "date": "2026-03-08",
+      "images": ["photos/photo_1@08-03-2026_16-35-19.jpg"],
+      "caption": "The Engineering Club officially launches for Grade 5, 6, and 7 students — a place where ideas turn into real projects. During weekly sessions, students first learn a simple concept, then apply it by building and testing a project, using tools like 3D printers and telescopes."
+    },
+    {
+      "id": "monthly-competitions-announced",
+      "type": "announcement",
+      "title": "Monthly Competitions Announced — Kite Challenge",
+      "date": "2026-03-08",
+      "images": ["photos/photo_2@08-03-2026_16-35-29.jpg"],
+      "caption": "Every month the club will run a competition based on projects built in sessions. The first competition is the Kite Challenge, with two categories: Build & Test (kites built during sessions) and Bring & Compete (kites brought from home)."
+    },
+    {
+      "id": "first-session-kites",
+      "type": "event",
+      "title": "First Engineering Club Session Held — Kite Building",
+      "date": "2026-03-11",
+      "images": [
+        "photos/photo_5@11-03-2026_23-25-09.jpg",
+        "photos/photo_6@11-03-2026_23-25-09.jpg",
+        "photos/photo_7@11-03-2026_23-25-09.jpg",
+        "photos/photo_8@11-03-2026_23-25-09.jpg",
+        "photos/photo_9@11-03-2026_23-25-09.jpg",
+        "photos/photo_10@11-03-2026_23-25-09.jpg",
+        "photos/photo_11@11-03-2026_23-25-09.jpg"
+      ],
+      "caption": "The Engineering Club held its first official session. Students built their own kites and learned the principles of flight, exploring ideas like balance and air resistance in a hands-on way."
+    },
+    {
+      "id": "second-session-kite-competition",
+      "type": "event",
+      "title": "Second Session: Kite Flying Competition",
+      "date": "2026-03-16",
+      "images": [
+        "photos/photo_17@16-03-2026_22-35-32.jpg",
+        "photos/photo_18@16-03-2026_22-35-32.jpg",
+        "photos/photo_19@16-03-2026_22-35-32.jpg",
+        "photos/photo_20@16-03-2026_22-35-32.jpg",
+        "photos/photo_21@16-03-2026_22-35-32.jpg"
+      ],
+      "caption": "The club's second session was a full kite competition. Students brought bought or handmade kites; the mentor team also built a giant kite. Kites were ranked on flight performance, design, and maximum height reached. Prizes to be given next semester."
+    },
+    {
+      "id": "kite-competition-awards",
+      "type": "event",
+      "title": "Kite Competition Awards Ceremony",
+      "date": "2026-03-18",
+      "images": [
+        "photos/photo_23@19-03-2026_10-52-03.jpg",
+        "photos/photo_24@19-03-2026_10-52-03.jpg",
+        "photos/photo_25@19-03-2026_10-52-03.jpg",
+        "photos/photo_26@19-03-2026_10-52-03.jpg"
+      ],
+      "caption": "At the awarding ceremony, every student who took part in the kite competition received a certificate of participation, and 1st, 2nd, and 3rd place winners received special certificates. All participants were also promised 1GB of extra internet next semester."
+    },
+    {
+      "id": "khiva-it-camp",
+      "type": "news",
+      "title": "Inclusive IT Camp Kicks Off in Khiva",
+      "date": "2026-03-26",
+      "images": [
+        "photos/photo_29@26-03-2026_17-00-37.jpg",
+        "photos/photo_30@26-03-2026_17-00-37.jpg",
+        "photos/photo_31@26-03-2026_17-00-37.jpg",
+        "photos/photo_32@26-03-2026_17-00-37.jpg",
+        "photos/photo_33@26-03-2026_17-00-37.jpg",
+        "photos/photo_34@26-03-2026_17-00-37.jpg",
+        "photos/photo_35@26-03-2026_17-00-37.jpg"
+      ],
+      "caption": "The traveling “Inclusive IT Camp,” organized under the Zamin Education and Digital Generation projects, kicked off in Khiva. Engineering Club mentors are participating in the camp as mentors."
+    },
+    {
+      "id": "second-month-khiva",
+      "type": "announcement",
+      "title": "Second Month Begins in Khiva — Bridges & 3D Project Announced",
+      "date": "2026-03-31",
+      "images": [
+        "photos/photo_36@31-03-2026_07-03-53.jpg",
+        "photos/photo_37@31-03-2026_07-03-53.jpg",
+        "photos/photo_38@31-03-2026_07-03-53.jpg",
+        "photos/photo_39@31-03-2026_07-03-53.jpg",
+        "photos/photo_40@31-03-2026_07-03-53.jpg"
+      ],
+      "caption": "The Engineering Club at Khiva Presidential School begins its second month. In April, members will learn to design and build durable bridges, and a new 3D modelling project was announced to be revealed later in the month."
+    },
+    {
+      "id": "navoi-first-seminar",
+      "type": "event",
+      "title": "First Seminar — Navoi Presidential School",
+      "date": "2026-04-01",
+      "images": [
+        "photos/photo_41@01-04-2026_18-41-01.jpg",
+        "photos/photo_42@01-04-2026_18-41-01.jpg",
+        "photos/photo_43@01-04-2026_18-41-01.jpg",
+        "photos/photo_44@01-04-2026_18-41-01.jpg",
+        "photos/photo_45@01-04-2026_18-41-01.jpg"
+      ],
+      "caption": "The Engineering Club in Navoi Presidential School held its first seminar. Members explored new engineering concepts, exchanged ideas, and worked on small hands-on projects to build problem-solving skills."
+    },
+    {
+      "id": "first-3d-session",
+      "type": "event",
+      "title": "First 3D Modelling Session",
+      "date": "2026-04-07",
+      "images": [
+        "photos/photo_48@08-04-2026_10-25-21.jpg",
+        "photos/photo_49@08-04-2026_10-25-21.jpg",
+        "photos/photo_50@08-04-2026_10-25-21.jpg",
+        "photos/photo_51@08-04-2026_10-25-21.jpg",
+        "photos/photo_52@08-04-2026_10-25-21.jpg",
+        "photos/photo_53@08-04-2026_10-25-21.jpg",
+        "photos/photo_54@08-04-2026_10-25-21.jpg"
+      ],
+      "caption": "Mentors began teaching club members the basics of 3D modelling in Blender. Students will go on to work on their own 3D projects."
+    },
+    {
+      "id": "instagram-launch",
+      "type": "announcement",
+      "title": "Engineering Club Joins Instagram",
+      "date": "2026-04-12",
+      "images": ["photos/instagram_profile_nesuuzz.png"],
+      "caption": "The club launched an Instagram page for updates and content, with the first video released the same day."
+    },
+    {
+      "id": "bridge-construction-begins",
+      "type": "event",
+      "title": "Bridge Construction Begins",
+      "date": "2026-04-14",
+      "images": [
+        "photos/photo_56@14-04-2026_08-20-07.jpg",
+        "photos/photo_57@14-04-2026_08-20-07.jpg",
+        "photos/photo_58@14-04-2026_08-20-07.jpg",
+        "photos/photo_59@14-04-2026_08-20-07.jpg"
+      ],
+      "caption": "After learning the physics behind real-life bridges — how they carry heavy loads and how to model a durable structure — students began choosing and designing their own bridge models."
+    },
+    {
+      "id": "bukhara-seminar",
+      "type": "event",
+      "title": "Bukhara Seminar",
+      "date": "2026-04-15",
+      "images": [
+        "photos/photo_60@15-04-2026_19-05-05.jpg",
+        "photos/photo_61@15-04-2026_19-05-05.jpg",
+        "photos/photo_62@15-04-2026_19-05-05.jpg",
+        "photos/photo_63@15-04-2026_19-05-05.jpg",
+        "photos/photo_64@15-04-2026_19-05-05.jpg"
+      ],
+      "caption": "Club representatives attended a seminar in Bukhara, described as full of energy, new connections, and inspiring conversations with motivated people."
+    },
+    {
+      "id": "club-meetup-april",
+      "type": "event",
+      "title": "Engineering Club Meetup",
+      "date": "2026-04-16",
+      "images": [
+        "photos/photo_65@16-04-2026_11-08-36.jpg",
+        "photos/photo_66@16-04-2026_11-08-36.jpg",
+        "photos/photo_67@16-04-2026_11-08-36.jpg",
+        "photos/photo_68@16-04-2026_11-08-36.jpg",
+        "photos/photo_69@16-04-2026_11-08-36.jpg"
+      ],
+      "caption": "A recent Engineering Club gathering brought together many passionate members for inspiring conversations and connections."
+    },
+    {
+      "id": "second-3d-session",
+      "type": "event",
+      "title": "3D Modeling Session",
+      "date": "2026-04-17",
+      "images": [
+        "photos/photo_70@17-04-2026_08-43-01.jpg",
+        "photos/photo_71@17-04-2026_08-43-01.jpg",
+        "photos/photo_72@17-04-2026_08-43-01.jpg",
+        "photos/photo_73@17-04-2026_08-43-01.jpg",
+        "photos/photo_74@17-04-2026_08-43-01.jpg",
+        "photos/photo_75@17-04-2026_08-43-01.jpg",
+        "photos/photo_76@17-04-2026_08-43-01.jpg"
+      ],
+      "caption": "Another 3D modelling session was held. Members watched ideas turn into real designs step by step — simple, but motivating."
+    },
+    {
+      "id": "seminar-highlights",
+      "type": "event",
+      "title": "Seminar Highlights",
+      "date": "2026-04-21",
+      "images": [
+        "photos/photo_77@21-04-2026_14-11-47.jpg",
+        "photos/photo_78@21-04-2026_14-11-47.jpg",
+        "photos/photo_79@21-04-2026_14-11-47.jpg",
+        "photos/photo_80@21-04-2026_14-11-47.jpg"
+      ],
+      "video": "video_files/video_1@21-04-2026_14-11-47.mp4",
+      "caption": "The club's latest seminar brought bright minds together to dive into current engineering trends and innovative solutions, from hands-on discussion to exploring future technologies."
+    },
+    {
+      "id": "navoi-vibes",
+      "type": "event",
+      "title": "Great Vibes from Navoi",
+      "date": "2026-04-24",
+      "images": [
+        "photos/photo_81@24-04-2026_12-41-52.jpg",
+        "photos/photo_82@24-04-2026_12-41-52.jpg",
+        "photos/photo_83@24-04-2026_12-41-52.jpg",
+        "photos/photo_84@24-04-2026_12-41-52.jpg",
+        "photos/photo_85@24-04-2026_12-41-52.jpg",
+        "photos/photo_86@24-04-2026_12-41-52.jpg",
+        "photos/photo_87@24-04-2026_12-41-52.jpg"
+      ],
+      "caption": "A session held in Navoi brought an enthusiastic, energetic crowd of engineering-minded students together to connect and share ideas."
+    },
+    {
+      "id": "website-launch",
+      "type": "announcement",
+      "title": "Website Launched",
+      "date": "2026-05-12",
+      "images": ["photos/website_homepage_launch.png"],
+      "caption": "Big news — the Engineering Club launched its own official website. The site was noted as still in test mode at launch, with members encouraged to report any bugs or errors."
+    },
+    {
+      "id": "new-moon-night",
+      "type": "event",
+      "title": "New Moon Stargazing Night",
+      "date": "2026-05-16",
+      "images": ["photos/photo_88@16-05-2026_12-04-52.jpg"],
+      "caption": "The club highlighted the New Moon (May 16, 2026, 20:03 UTC) as a prime dark-sky opportunity for observing galaxies, nebulae, and star clusters, and encouraged members to observe and share photos."
+    },
+    {
+      "id": "webinar-series-announced",
+      "type": "announcement",
+      "title": "10-Day Webinar Series Announced",
+      "date": "2026-05-17",
+      "images": ["photos/photo_89@17-05-2026_21-27-49.jpg"],
+      "caption": "10 Days. 10 Speakers. Endless Opportunities. The Engineering Club announced a 10-Day Webinar Series bringing together robotics champions, startup founders, researchers, university students, and STEM enthusiasts from around the world to share practical experience on building startups, learning AI, building portfolios, and standing out in STEM. Series set to start May 20."
+    },
+    {
+      "id": "webinar-session-1",
+      "type": "event",
+      "title": "Webinar Series — Session 1: Studying AI & Computer Science in the UK",
+      "date": "2026-05-20",
+      "images": [
+        "photos/photo_90@17-05-2026_22-28-33.jpg",
+        "photos/photo_93@20-05-2026_20-07-51.jpg",
+        "photos/photo_94@20-05-2026_20-16-33.jpg",
+        "photos/photo_95@20-05-2026_20-26-09.jpg"
+      ],
+      "caption": "Speaker: Doniyorbek Boltayev, first-year AI & Computer Science student at the University of Birmingham (Khiva PS Class of 2024). Topics covered: getting accepted to UK universities, what universities look for, studying AI/CS, challenges facing international students, and building a stronger STEM profile. Session held successfully as scheduled at 20:00 (Uzbek time)."
+    },
+    {
+      "id": "webinar-session-2",
+      "type": "event",
+      "title": "Webinar Series — Session 2: Studying Mechanical Engineering in the UK",
+      "date": "2026-05-21",
+      "images": ["photos/photo_91@18-05-2026_12-14-03.jpg"],
+      "caption": "Speaker: Husan Samandarov, first-year Mechanical Engineering student at the University of Bristol (Khiva Presidential School Class of 2025). Topics covered: his journey applying to and studying in the UK, why he chose Mechanical Engineering, pros and cons of studying engineering, student life in Bristol, and a live Q&A."
+    },
+    {
+      "id": "webinar-session-3",
+      "type": "event",
+      "title": "Webinar Series — Session 3: From Competitive Robotics to Nazarbayev University",
+      "date": "2026-05-22",
+      "images": ["photos/photo_92@18-05-2026_21-44-43.jpg"],
+      "caption": "Speaker: Mardan, a robotics enthusiast and incoming freshman at Nazarbayev University. Starting VEX Robotics in 5th grade, he went on to win multiple international championships and represented Kazakhstan twice at the VEX Robotics World Championship, and is now building his own startup, Planteptis AI. Topics covered: his journey in competitive robotics, lessons from international championships, and transitioning from robotics to startups and AI."
+    },
+    {
+      "id": "webinar-session-4",
+      "type": "event",
+      "title": "Webinar Series — Session 4: Tech Career in New York",
+      "date": "2026-05-23",
+      "images": [
+        "photos/photo_97@22-05-2026_23-34-08.jpg",
+        "photos/photo_98@23-05-2026_20-12-11.jpg",
+        "photos/photo_99@23-05-2026_20-27-27.jpg"
+      ],
+      "caption": "Speaker: Nodira Kazakova, Computer Science student at LIU Post, New York (Nukus Presidential School Class of 2022). She earned a full-tuition scholarship, graduated with honors, and works as a Backend Software Engineer Intern at TransPerfect in NYC. Topics covered: winning a full-tuition US scholarship, studying CS in New York, landing a software engineering internship, and balancing work, academics, and finances abroad."
+    },
+    {
+      "id": "webinar-session-5",
+      "type": "event",
+      "title": "Webinar Series — Session 5: Drone Engineering",
+      "date": "2026-05-25",
+      "images": [
+        "photos/photo_100@24-05-2026_19-54-42.jpg",
+        "photos/photo_101@25-05-2026_20-10-45.jpg",
+        "photos/photo_102@25-05-2026_20-19-56.jpg",
+        "photos/photo_103@25-05-2026_20-26-30.jpg",
+        "photos/photo_104@25-05-2026_20-35-59.jpg",
+        "photos/photo_105@25-05-2026_20-40-11.jpg",
+        "photos/photo_106@25-05-2026_20-47-33.jpg"
+      ],
+      "caption": "Speaker: Mirzobek Malikov, a Drone Engineer specializing in UAV control systems and R&D, and a professor of Drone Technology Fundamentals and Piloting. Topics covered: drone technology fundamentals, how UAV control systems work, real-world drone applications, and R&D challenges in UAV engineering."
+    },
+    {
+      "id": "webinar-session-6",
+      "type": "event",
+      "title": "Webinar Series — Session 6: The Path to Stanford",
+      "date": "2026-05-26",
+      "images": [
+        "photos/photo_107@25-05-2026_21-05-18.jpg",
+        "photos/photo_108@26-05-2026_20-13-08.jpg",
+        "photos/photo_109@26-05-2026_20-21-39.jpg",
+        "photos/photo_110@26-05-2026_20-24-15.jpg"
+      ],
+      "caption": "Speaker: Rithik Vinay, a Class of 2030 student recently accepted into Stanford University for Electrical Engineering. Topics covered: his journey to Stanford, why he chose Electrical Engineering, building a strong profile for top universities, and the role of tech communities and networking. A surprise guest also joined the session."
+    },
+    {
+      "id": "webinar-session-7",
+      "type": "event",
+      "title": "Webinar Series — Session 7: From School Projects to UCL Biomedical Engineering",
+      "date": "2026-05-28",
+      "images": ["photos/photo_111@28-05-2026_15-50-08.jpg"],
+      "caption": "Speaker: Yusufboy Yusupov, a Presidential School in Khiva graduate and EYUF scholarship holder studying Biomedical Engineering at UCL, with A*A*A* in Mathematics, Physics, and Chemistry and a 1550 SAT score. Topics covered: his journey to UCL, why he chose Biomedical Engineering, and balancing academics, competitions, and leadership."
+    },
+    {
+      "id": "webinar-session-8",
+      "type": "event",
+      "title": "Webinar Series — Session 8: Computer Science & AI at Sheffield",
+      "date": "2026-06-04",
+      "images": ["photos/photo_112@03-06-2026_13-37-14.jpg"],
+      "caption": "Speaker: Zarnigor Yusupova, a Presidential School in Khiva graduate and EYUF scholarship holder studying Computer Science and Artificial Intelligence at the University of Sheffield, with A*A*A* in Mathematics, Physics, and Computer Science and a 1500 SAT score. Topics covered: her journey to Sheffield, why she chose Computer Science, and balancing academics, competitions, and leadership. Originally scheduled for June 3, the session was rescheduled and held on June 4."
+    },
+    {
+      "id": "webinar-series-ends",
+      "type": "news",
+      "title": "10-Day Webinar Series Wraps Up",
+      "date": "2026-06-08",
+      "images": ["photos/photo_113@08-06-2026_16-36-42.jpg"],
+      "caption": "The club's first large-scale webinar series came to a close after hosting students, engineers, researchers, and innovators from across STEM fields. Despite some technical issues along the way, the organizers called it a valuable learning experience and promised future events would be even better."
+    },
+    {
+      "id": "bridge-competition-results",
+      "type": "event",
+      "title": "Bridge Competition Results — Grade 5, 6 & 7",
+      "date": "2026-05-18",
+      "images": [
+        "photos/photo_114@08-06-2026_17-36-20.jpg",
+        "photos/photo_115@08-06-2026_17-36-20.jpg",
+        "photos/photo_116@08-06-2026_17-36-20.jpg",
+        "photos/photo_117@08-06-2026_17-36-20.jpg",
+        "photos/photo_118@08-06-2026_17-36-20.jpg"
+      ],
+      "video": "video_files/MVI_9613.MP4",
+      "caption": "Grade 5, 6, and 7 students competed to build a bridge from wooden sticks that could hold the most weight. The best bridge held a whopping 33 kg; the weakest held about 3 kg. Students sketched ideas, tested designs, and rebuilt after failures — as the winning team put it, ‘Hard work is key to success!’ (Competition held May 18, 2026; full recap posted June 8.)"
+    },
+    {
+      "id": "nesu-reveal",
+      "type": "announcement",
+      "title": "NESU Reveal — Engineering Club Becomes NESU",
+      "date": "2026-07-12",
+      "images": ["photos/photo_121@12-07-2026_20-00-41.jpg"],
+      "caption": "After a teaser (“the Engineering Club is back with exciting news,” July 1) and a countdown campaign, the club revealed its rebrand: the Engineering Club is now the National Engineering Society of Uzbekistan (NESU)."
+    },
+    {
+      "id": "nesu-x-target",
+      "type": "announcement",
+      "title": "NESU × Target International School Partnership",
+      "date": "2026-07-15",
+      "images": [
+        "photos/photo_122@15-07-2026_10-23-48.jpg",
+        "photos/photo_123@15-07-2026_10-23-48.jpg",
+        "photos/photo_124@15-07-2026_10-23-48.jpg",
+        "photos/photo_125@15-07-2026_10-23-48.jpg",
+        "photos/photo_126@15-07-2026_10-23-48.jpg"
+      ],
+      "caption": "NESU announces an official partnership (memorandum of understanding) with Target International School, which becomes NESU's official partner — supporting NESU's mission to expand engineering education and create more opportunities for students."
+    },
+    {
+      "id": "nesu-x-uzlab",
+      "type": "announcement",
+      "title": "NESU × UzLab Partnership",
+      "date": "2026-07-17",
+      "images": [
+        "photos/photo_128@17-07-2026_11-35-16.jpg",
+        "photos/photo_129@17-07-2026_11-35-16.jpg",
+        "photos/photo_130@17-07-2026_11-35-16.jpg",
+        "photos/photo_131@17-07-2026_11-35-16.jpg",
+        "photos/photo_132@17-07-2026_11-35-16.jpg"
+      ],
+      "caption": "NESU announces an official partnership with UzLab. The collaboration aims to create more opportunities for students interested in engineering, research, and innovation, helping them develop practical skills, connect with industry, and turn ideas into real projects."
+    },
+    {
+      "id": "nesu-x-tpe",
+      "type": "announcement",
+      "title": "NESU × Triple Point Engineering (TPE) Partnership",
+      "date": "2026-07-18",
+      "images": [
+        "photos/photo_134@18-07-2026_12-00-01.jpg",
+        "photos/photo_135@18-07-2026_12-00-01.jpg",
+        "photos/photo_136@18-07-2026_12-00-01.jpg",
+        "photos/photo_137@18-07-2026_12-00-01.jpg",
+        "photos/photo_138@18-07-2026_12-00-01.jpg"
+      ],
+      "caption": "NESU announces a partnership with Triple Point Engineering (TPE), creating opportunities for aspiring engineers to learn from industry professionals, gain practical experience, and work on projects that bridge education and real engineering."
+    }
+  ]
+}

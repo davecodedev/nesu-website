@@ -14,7 +14,6 @@ export const NAV = [
   { key: 'about', href: 'about.dc.html' },
   { key: 'events', href: 'events.dc.html' },
   { key: 'competitions', href: 'competitions.dc.html' },
-  { key: 'news', href: 'news.dc.html' },
   { key: 'fields', href: 'fields.dc.html' },
   { key: 'gallery', href: 'gallery.dc.html' },
   { key: 'qa', href: 'qa.dc.html' },

@@ -28,10 +28,6 @@
     body { margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; background: var(--bg); }
     input, textarea, select { background-color: var(--panel); color: var(--text); caret-color: var(--text); }
     html[data-nesu-cursor="1"], html[data-nesu-cursor="1"] * { cursor: none !important; }
-    @media (prefers-reduced-motion: no-preference) {
-      [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity 0.75s cubic-bezier(0.2, 0.65, 0.25, 1), transform 0.75s cubic-bezier(0.2, 0.65, 0.25, 1); }
-      [data-reveal="in"] { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </helmet>
 <div data-nesu-cursor-el="1" style="position: fixed; top: 0; left: 0; z-index: 6000; width: 36px; height: 36px; margin: -9px 0 0 -9px; pointer-events: none; opacity: 0; transition: opacity 0.25s ease">
@@ -171,6 +167,10 @@ class Component extends DCLogic {
   state = { lang: 'en', scrolled: false, isMobile: false, menuOpen: false };
 
   async componentDidMount() {
+    // Anonymous visitor analytics (view + time-on-page beacons) — fire and forget.
+    import(new URL('analytics.js', document.baseURI).href)
+      .then((a) => a.trackPage())
+      .catch(() => {});
     this._onScroll = () => {
       const s = window.scrollY > 24;
       if (s !== this.state.scrolled) this.setState({ scrolled: s });
@@ -180,26 +180,6 @@ class Component extends DCLogic {
     this._onMq = () => this.setState({ isMobile: this._mq.matches });
     this._onMq();
     this._mq.addEventListener('change', this._onMq);
-    // Scroll-reveal: elements with [data-reveal] rise in as they enter the viewport
-    {
-      const seen = new WeakSet();
-      this._revealIO = new IntersectionObserver((entries) => {
-        let i = 0;
-        entries.forEach((en) => {
-          if (!en.isIntersecting) return;
-          en.target.style.transitionDelay = (i++ * 0.09) + 's';
-          en.target.setAttribute('data-reveal', 'in');
-          this._revealIO.unobserve(en.target);
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
-      this._revealScan = setInterval(() => {
-        document.querySelectorAll('[data-reveal]').forEach((el) => {
-          if (seen.has(el) || el.getAttribute('data-reveal') === 'in') return;
-          seen.add(el);
-          this._revealIO.observe(el);
-        });
-      }, 350);
-    }
     // Custom cursor (fine pointers only) + weld sparks on click/tap (all devices)
     {
       const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -317,8 +297,6 @@ class Component extends DCLogic {
   componentWillUnmount() {
     window.removeEventListener('scroll', this._onScroll);
     if (this._mq) this._mq.removeEventListener('change', this._onMq);
-    if (this._revealScan) clearInterval(this._revealScan);
-    if (this._revealIO) this._revealIO.disconnect();
     if (this._cursorRaf) cancelAnimationFrame(this._cursorRaf);
     if (this._onCursorMove) {
       window.removeEventListener('mousemove', this._onCursorMove);
