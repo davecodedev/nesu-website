@@ -1,19 +1,28 @@
 // Combined analytics endpoint (Hobby plan allows max 12 serverless functions):
 //   POST → public tracking beacon from analytics.js ('view' and 'leave' events),
-//          aggregated into anonymous daily per-page counters
-//   GET  → admin read of the whole analytics document (requires session)
+//          each recorded as an append-only event blob — anonymous, race-free
+//   GET  → admin read: aggregated daily/per-page stats (requires session)
 const { verifySession } = require('../lib/cms-auth');
-const { loadAnalytics, saveAnalytics } = require('../lib/analytics-db');
+const { recordEvent, getAnalytics } = require('../lib/analytics-db');
 
 module.exports = async (req, res) => {
+  try {
+    await handler(req, res);
+  } catch (e) {
+    console.error('[analytics] unhandled:', e && e.message);
+    res.status(500).json({ error: 'analytics_failed' });
+  }
+};
+
+async function handler(req, res) {
   if (req.method === 'GET') {
     if (!verifySession(req)) {
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
-    const db = await loadAnalytics();
+    const data = await getAnalytics();
     res.setHeader('Cache-Control', 'no-store');
-    res.status(200).json(db);
+    res.status(200).json(data);
     return;
   }
 
@@ -39,24 +48,12 @@ module.exports = async (req, res) => {
   if (path.charAt(0) !== '/') path = '/' + path;
   if (path.indexOf('admin') !== -1) { res.status(204).end(); return; }
 
-  const db = await loadAnalytics();
-  const day = new Date().toISOString().slice(0, 10);
-  const d = db.days[day] = db.days[day] || { views: 0, visitors: 0, durSum: 0, durN: 0, pages: {} };
-  const p = d.pages[path] = d.pages[path] || { views: 0, durSum: 0, durN: 0 };
-
-  if (type === 'view') {
-    d.views += 1;
-    p.views += 1;
-    if (b.newToday) d.visitors += 1;
-    if (b.newVisitor) db.totalVisitors = (db.totalVisitors || 0) + 1;
-  } else {
-    const s = Math.max(0, Math.min(7200, Math.round(Number(b.seconds) || 0)));
-    if (s > 0) {
-      d.durSum += s; d.durN += 1;
-      p.durSum += s; p.durN += 1;
-    }
-  }
-
-  await saveAnalytics(db);
+  await recordEvent({
+    type,
+    path,
+    seconds: Math.max(0, Math.min(7200, Math.round(Number(b.seconds) || 0))),
+    newVisitor: !!b.newVisitor,
+    newToday: !!b.newToday
+  });
   res.status(204).end();
-};
+}

@@ -1,7 +1,7 @@
 // Auth-gated image upload — decodes a data URL and stores it as a real file
 // in Vercel Blob, returning a public URL. Keeps large images out of the CMS
 // JSON document entirely (which would otherwise bloat every read/write).
-const { put } = require('@vercel/blob');
+const { putBlob } = require('../lib/blob-rest');
 const { verifySession } = require('../lib/cms-auth');
 
 const MAX_BYTES = 4 * 1024 * 1024;
@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
   const name = 'uploads/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
 
   try {
-    const blob = await put(name, buf, { access: 'public', contentType: mime });
+    const blob = await putBlob(name, buf, mime);
     res.status(200).json({ url: blob.url });
   } catch (e) {
     console.error('[cms-upload] put failed:', e && e.message, e);
