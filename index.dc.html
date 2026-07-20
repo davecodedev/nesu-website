@@ -22,9 +22,6 @@
   </style>
 </helmet>
 <div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--panel)">
-  <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ false }}">
-    <dc-import name="Intro" on-done="{{ introDone }}" hint-size="100%,0px"></dc-import>
-  </sc-if>
   <dc-import name="Header" active="home" hint-size="100%,80px"></dc-import>
   <main data-screen-label="Home" style="flex: 1">
 
@@ -209,13 +206,10 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { lang: 'en', showIntro: false, bp: 0, bv: 0, flips: {}, qaOpen: null, nnItems: [] };
+  state = { lang: 'en', bp: 0, bv: 0, flips: {}, qaOpen: null, nnItems: [] };
   blackoutRef = React.createRef();
 
   async componentDidMount() {
-    try {
-      if (!sessionStorage.getItem('nesu-intro-seen')) this.setState({ showIntro: true });
-    } catch (e) {}
     this._onScroll = () => {
       const el = this.blackoutRef.current;
       if (!el) return;
@@ -342,8 +336,6 @@ class Component extends DCLogic {
       showStrips: !!this.state.strips && (strips.stripA.length + strips.stripB.length) > 0,
       stripA: strips.stripA,
       stripB: strips.stripB,
-      showIntro: this.state.showIntro,
-      introDone: () => this.setState({ showIntro: false }),
       annotation: t('brand.annotation'),
       heroTitle: t('home.title'),
       heroIntro: t('home.intro'),
