@@ -1,5 +1,5 @@
 // Lightweight first-party visitor analytics. Loaded by the Header on every
-// public page. Sends two anonymous beacons to /api/track: a 'view' when the
+// public page. Sends two anonymous beacons to /api/analytics: a 'view' when the
 // page loads, and a 'leave' with the seconds the page was actually visible
 // (accumulated across tab switches, flushed on hide/unload via sendBeacon).
 // Visitor uniqueness is a localStorage flag — no cookies, no IDs sent.
@@ -8,9 +8,9 @@ function send(data) {
   try {
     const body = JSON.stringify(data);
     if (navigator.sendBeacon) {
-      navigator.sendBeacon('/api/track', new Blob([body], { type: 'application/json' }));
+      navigator.sendBeacon('/api/analytics', new Blob([body], { type: 'application/json' }));
     } else {
-      fetch('/api/track', {
+      fetch('/api/analytics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body,

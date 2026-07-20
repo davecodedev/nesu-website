@@ -1,14 +1,27 @@
-// Public tracking beacon — no auth (it is hit by every visitor). Accepts two
-// event types from analytics.js: a 'view' when a page loads and a 'leave'
-// carrying the seconds the page was actually visible. Aggregates into daily
-// per-page counters; never stores anything that identifies the visitor.
+// Combined analytics endpoint (Hobby plan allows max 12 serverless functions):
+//   POST → public tracking beacon from analytics.js ('view' and 'leave' events),
+//          aggregated into anonymous daily per-page counters
+//   GET  → admin read of the whole analytics document (requires session)
+const { verifySession } = require('../lib/cms-auth');
 const { loadAnalytics, saveAnalytics } = require('../lib/analytics-db');
 
 module.exports = async (req, res) => {
+  if (req.method === 'GET') {
+    if (!verifySession(req)) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+    const db = await loadAnalytics();
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(200).json(db);
+    return;
+  }
+
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
+
   let b = req.body;
   if (typeof b === 'string') {
     try { b = JSON.parse(b); } catch (e) { b = null; }

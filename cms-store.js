@@ -2,7 +2,7 @@
 // Blob storage, see api/cms-data.js and api/cms-save.js) instead of
 // localStorage, so admin edits are visible to every visitor, not just the
 // browser that made them. Writes require an authenticated admin session
-// (see api/cms-login.js) — a signed cookie, verified server-side.
+// (see api/cms-session.js) — a signed cookie, verified server-side.
 
 let cachedData = null;
 let cachedAt = 0;
@@ -133,7 +133,7 @@ export async function saveReport(r) {
 
 // ---- auth ----
 export async function login(user, pass) {
-  const res = await fetch('/api/cms-login', {
+  const res = await fetch('/api/cms-session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ user, pass })
@@ -150,5 +150,5 @@ export async function isLoggedIn() {
   }
 }
 export async function logout() {
-  await fetch('/api/cms-logout', { method: 'POST' });
+  await fetch('/api/cms-session', { method: 'DELETE' });
 }

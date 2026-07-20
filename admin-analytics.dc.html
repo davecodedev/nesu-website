@@ -128,7 +128,7 @@ class Component extends DCLogic {
     this.cms = await import(new URL('cms-store.js', document.baseURI).href);
     if (!(await this.cms.isLoggedIn())) { window.location.replace('admin.dc.html'); return; }
     try {
-      const res = await fetch('/api/cms-analytics');
+      const res = await fetch('/api/analytics');
       if (res.status === 401) { window.location.replace('admin.dc.html'); return; }
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
